@@ -40,7 +40,7 @@ export class TestData {
       title: 'Передать отчёты начальнику управления',
       priority: TestData.priorities[2],
       completed: false,
-      category: TestData.categories[1],
+      category: TestData.categories[0],
       date: new Date('2020-07-19')
     },
     {
@@ -74,7 +74,7 @@ export class TestData {
     },
     {
       id: 7,
-      title: 'Найти билеты вв турцию, выбрать отель',
+      title: 'Найти билеты в Турцию, выбрать отель',
       priority: TestData.priorities[2],
       completed: false,
       category: TestData.categories[3]

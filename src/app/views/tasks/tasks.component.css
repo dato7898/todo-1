@@ -6,3 +6,36 @@
 .no-value {
   color: #b7b7b7;
 }
+
+.col-color {
+  width: 1% !important;
+}
+
+.col-id {
+  width: 4%;
+  text-align: center;
+}
+
+.col-title {
+  width:40%
+}
+
+.col-date {
+  width: 10% !important;
+}
+
+.col-priority {
+  width: 10%;
+}
+
+.col-category {
+  width: 10%;
+}
+
+.col-select {
+  width: 2%;
+}
+
+.col-operation {
+  width: 8%;
+}

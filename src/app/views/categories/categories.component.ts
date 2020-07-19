@@ -15,11 +15,11 @@ export class CategoriesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.dataHandler.categorySubject.subscribe(category => this.categories = category);
+    this.dataHandler.getAllCategories().subscribe(category => this.categories = category);
   }
 
   showTasksByCategory(category: Category) {
     this.selectedCategory = category;
-    this.dataHandler.fillTasksByCategory(category);
+    //this.dataHandler.fillTasksByCategory(category);
   }
 }

@@ -2,7 +2,7 @@
   <div class="card-header card-header-warning">
     <h4 class="card-title">Список задач</h4>
   </div>
-  <div *ngIf="tasks.length" class="card-body table-responsive">
+  <div *ngIf="tasks.length; else noData" class="card-body table-responsive">
     <table [dataSource]="dataSource" mat-table matSort>
       <!--  цвет приоритета  -->
       <ng-container matColumnDef="color">
@@ -67,6 +67,6 @@
     <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]" showFirstLastButtons></mat-paginator>
   </div>
 
-  <div *ngIf="tasks.length == 0"><p class="not-found">Ничего не найдено</p></div>
+  <ng-template #noData><p class="not-found">Ничего не найдено</p></ng-template>
 
 </div>

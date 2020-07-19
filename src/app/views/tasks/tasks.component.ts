@@ -1,4 +1,4 @@
-import {Component, OnInit, AfterViewInit, ViewChild} from '@angular/core';
+import {Component, OnInit, AfterViewInit, ViewChild, Input} from '@angular/core';
 import {DataHandlerService} from '../../service/data-handler.service';
 import {Task} from 'src/app/model/Task';
 import {MatTableDataSource} from '@angular/material/table';
@@ -10,7 +10,7 @@ import { MatSort } from '@angular/material/sort';
   templateUrl: './tasks.component.html',
   styleUrls: ['./tasks.component.css']
 })
-export class TasksComponent implements OnInit, AfterViewInit {
+export class TasksComponent implements OnInit {
   // поля для таблицы (те, что отображают данные из задачи - должны совпадать с названиями переменных класса)
   displayedColumns: string[] = ['color', 'id', 'title', 'date', 'priority', 'category'];
   dataSource: MatTableDataSource<Task>; // контейнер - источник данных для таблицы
@@ -19,22 +19,16 @@ export class TasksComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, {static: false}) private paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) private sort: MatSort;
 
-  tasks: Task[];
+  @Input() tasks: Task[];
 
   constructor(private dataHandler: DataHandlerService) {
   }
 
   ngOnInit(): void {
-    this.dataHandler.getAllTasks().subscribe(tasks => this.tasks = tasks);
 
     // датасорс обязательно нужно создавать для таблицы, в него присваивается любой источник (БД, массивы, JSON и пр.)
     this.dataSource = new MatTableDataSource();
-    this.refreshTable();
-  }
-
-  // в этом методе уже все проинциализировано, поэтому можно присваивать объекты (иначе может быть ошибка undefined)
-  ngAfterViewInit(): void {
-    this.addTableObjects();
+    this.fillTable();
   }
 
   toggleTaskCompleted(task) {
@@ -54,7 +48,7 @@ export class TasksComponent implements OnInit, AfterViewInit {
   }
 
   // показывает задачи с применением всех текущий условий (категория, поиск, фильтры и пр.)
-  private refreshTable() {
+  private fillTable() {
     this.dataSource.data = this.tasks; // обновить источник данных (т.к. данные массива tasks обновились)
     this.addTableObjects();
 

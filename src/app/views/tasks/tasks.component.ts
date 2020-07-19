@@ -1,9 +1,9 @@
-import {Component, OnInit, AfterViewInit, ViewChild, Input} from '@angular/core';
+import {Component, OnInit, ViewChild, Input, Output, EventEmitter} from '@angular/core';
 import {DataHandlerService} from '../../service/data-handler.service';
 import {Task} from 'src/app/model/Task';
 import {MatTableDataSource} from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
 
 @Component({
   selector: 'app-tasks',
@@ -19,13 +19,19 @@ export class TasksComponent implements OnInit {
   @ViewChild(MatPaginator, {static: false}) private paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) private sort: MatSort;
 
-  @Input() tasks: Task[];
+  @Output() updateTask = new EventEmitter<Task>();
+  tasks: Task[];
+
+  @Input('tasks')
+  private set setTasks(tasks: Task[]) {
+    this.tasks = tasks;
+    this.fillTable();
+  }
 
   constructor(private dataHandler: DataHandlerService) {
   }
 
   ngOnInit(): void {
-
     // датасорс обязательно нужно создавать для таблицы, в него присваивается любой источник (БД, массивы, JSON и пр.)
     this.dataSource = new MatTableDataSource();
     this.fillTable();
@@ -49,6 +55,10 @@ export class TasksComponent implements OnInit {
 
   // показывает задачи с применением всех текущий условий (категория, поиск, фильтры и пр.)
   private fillTable() {
+    if (!this.dataSource) {
+      return;
+    }
+
     this.dataSource.data = this.tasks; // обновить источник данных (т.к. данные массива tasks обновились)
     this.addTableObjects();
 
@@ -81,4 +91,7 @@ export class TasksComponent implements OnInit {
     this.dataSource.paginator = this.paginator; // обновить компонент постраничности (кол-во записей, страниц)
   }
 
+  onClickTask(task: Task) {
+    this.updateTask.emit(task);
+  }
 }

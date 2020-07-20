@@ -9,22 +9,33 @@ import {Task} from 'src/app/model/Task';
   styleUrls: ['./edit-task-dialog.component.css']
 })
 export class EditTaskDialogComponent implements OnInit {
-  private dialogTitle: string;
-  private task: Task;
+  dialogTitle: string;
+  task: Task;
+  tmpTitle: string;
 
   constructor(
     private dialogRef: MatDialogRef<EditTaskDialogComponent>, // для возможности работы с текущим диалог. окном
     @Inject(MAT_DIALOG_DATA) private data: [Task, string], // данные, которые передали в диалоговое окно
-    private dataHandler: DataHandlerService,
-    private dialog: MatDialog
   ) {
   }
 
   ngOnInit(): void {
     this.task = this.data[0];
     this.dialogTitle = this.data[1];
-    console.log(this.task);
-    console.log(this.dialogTitle);
+    this.tmpTitle = this.task.title;
+  }
+
+  onConfirm(): void {
+    this.task.title = this.tmpTitle;
+
+    // передаем добавленную/измененную задачу в обработчик
+    // что с ним будут делать - уже нe задача этого компонента
+    this.dialogRef.close(this.task);
+  }
+
+  // нажали отмену (ничего не сохраняем и закрываем окно)
+  onCancel(): void {
+    this.dialogRef.close(null);
   }
 
 }

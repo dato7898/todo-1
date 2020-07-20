@@ -22,7 +22,6 @@ export class TasksComponent implements OnInit {
   @ViewChild(MatSort, {static: false}) private sort: MatSort;
 
   @Output() deleteTask = new EventEmitter<Task>();
-
   @Output() updateTask = new EventEmitter<Task>();
   tasks: Task[];
 
@@ -105,6 +104,18 @@ export class TasksComponent implements OnInit {
       autoFocus: false
     });
     dialogRef.afterClosed().subscribe(result => {
+      if (result === 'activate') {
+        task.completed = false;
+        this.updateTask.emit(task);
+        return;
+      }
+
+      if (result === 'complete') {
+        task.completed = true;
+        this.updateTask.emit(task);
+        return;
+      }
+
       if (result === 'delete') {
         this.deleteTask.emit(task);
         return;

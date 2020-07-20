@@ -52,18 +52,35 @@
 <!--  кнопки возможных действий-->
 <mat-dialog-actions>
 
-  <button
-    (click)="onConfirm()"
-    color="primary" mat-raised-button
-    [disabled]="inputTitle.value.trim().length==0">  <!-- если пустой текст - кнопка "Сохранить" будет недоступна -->
-    Сохранить
-  </button>
-  <button (click)="onCancel()" mat-raised-button>Отмена</button>
-  <button
-    mat-button
-    class="red"
-    (click)="delete()">
-    Удалить задачу
-  </button>
+  <div class="col-md-5 col-12">
+    <button
+      (click)="onConfirm()"
+      color="primary" mat-raised-button
+      [disabled]="inputTitle.value.trim().length==0">  <!-- если пустой текст - кнопка "Сохранить" будет недоступна -->
+      Сохранить
+    </button>
+    <button (click)="onCancel()" mat-raised-button>Отмена</button>
+  </div>
+
+  <div class="col-md-7 col-12 text-right">
+    <button
+      mat-button class="green"
+      *ngIf="task.completed"
+      (click)="activate()">
+      Активировать
+    </button>
+    <button
+      mat-button class="green"
+      *ngIf="!task.completed"
+      (click)="complete()">
+      Завершить задачу
+    </button>
+    <button
+      mat-button
+      class="red"
+      (click)="delete()">
+      Удалить задачу
+    </button>
+  </div>
 
 </mat-dialog-actions>

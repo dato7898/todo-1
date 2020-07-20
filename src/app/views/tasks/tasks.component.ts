@@ -21,6 +21,8 @@ export class TasksComponent implements OnInit {
   @ViewChild(MatPaginator, {static: false}) private paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) private sort: MatSort;
 
+  @Output() deleteTask = new EventEmitter<Task>();
+
   @Output() updateTask = new EventEmitter<Task>();
   tasks: Task[];
 
@@ -103,6 +105,11 @@ export class TasksComponent implements OnInit {
       autoFocus: false
     });
     dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteTask.emit(task);
+        return;
+      }
+
       if (result as Task) { // если нажали ОК и есть результат
         this.updateTask.emit(task);
         return;

@@ -38,3 +38,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   cursor: pointer;
   text-decoration: underline;
 }
+
+.line {
+  border-bottom: 1px solid #dadada;
+  padding-top: 20px;
+}

@@ -96,7 +96,7 @@ export class TasksComponent implements OnInit {
     this.dataSource.paginator = this.paginator; // обновить компонент постраничности (кол-во записей, страниц)
   }
 
-  // диалоговое редактирования для добавления задачи
+  // диалоговое окно для редактирования и добавления задачи
   openEditTaskDialog(task: Task) {
     // открытие диалогового окна
     const dialogRef = this.dialog.open(EditTaskDialogComponent, {

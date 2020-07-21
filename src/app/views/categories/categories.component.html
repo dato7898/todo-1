@@ -14,7 +14,7 @@
           [class.active]="selectedCategory === null">
         <a class="nav-link pointer">
           <!-- название категории -->
-          <span class="all-category-title" >Все</span>
+          <span class="all-category-title">Все</span>
         </a>
       </li>
 
@@ -22,10 +22,25 @@
       <div class="line"></div>
 
       <li class="nav-item pointer"
-          *ngFor="let category of categories" (click)="showTasksByCategory(category)"
+          *ngFor="let category of categories; let index = index "
+          (click)="showTasksByCategory(category)"
+          (mouseleave)="showEditIcon(null)"
+          (mouseenter)="showEditIcon(index)"
           [class.active]="selectedCategory === category">
         <a class="nav-link">
-          <p>{{category.title}}</p>
+
+          <!-- название категории -->
+          <span class="category-title">{{category.title}}</span>
+
+          <!-- кнопка редактирования категории -->
+          <span class="edit-category-icon-area">
+            <mat-icon
+              *ngIf="indexMouseMove === index"
+              (click)="$event.stopPropagation(); openEditCategoryDialog(category)"
+              class="edit-category-icon">
+              edit
+            </mat-icon>
+          </span>
         </a>
       </li>
     </ul>

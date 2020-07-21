@@ -23,7 +23,7 @@
   </div>
 
   <div class="col-md-3 col-sm-12">
-    <!--    фильтр по статусу -->
+    <!-- фильтр по статусу -->
     <mat-form-field>
       <mat-select #statusFilter (valueChange)="onFilterByStatus(this.$event)"
                   [value]="selectedStatusFilter" placeholder="Фильтр по статусу">
@@ -42,7 +42,22 @@
   </div>
 
   <div class="col-md-3 col-sm-12">
-
+    <!-- фильтр по приоритету -->
+    <mat-form-field>
+      <mat-select #statusFilter (valueChange)="onFilterByPriority(this.$event)"
+                  [value]="selectedPriorityFilter" placeholder="Фильтр по приоритету">
+        <mat-option [value]="null">Все приоритеты</mat-option>
+        <mat-option *ngFor="let priority of priorities"
+                    [value]="priority">{{priority.title}}</mat-option>
+      </mat-select>
+      <button
+        (click)="$event.stopPropagation(); onFilterByPriority(null)"
+        *ngIf="selectedPriorityFilter != null"
+        aria-label="Clear" class="clear-icon size25 gray" mat-button
+        mat-icon-button matSuffix>
+        <mat-icon>clear</mat-icon>
+      </button>
+    </mat-form-field>
   </div>
 
   <div class="col-md-3 col-sm-12 text-right">
@@ -51,8 +66,12 @@
         <button
           (click)="$event.stopPropagation();
                     onFilterByStatus(null);
-                    searchTaskText = ''; onFilterByTitle()"
-          *ngIf="selectedStatusFilter != null ||  (searchTaskText != null && searchTaskText.trim() != '') "
+                    onFilterByPriority(null);
+                    searchTaskText = '';
+                    onFilterByTitle()"
+          *ngIf="selectedStatusFilter != null
+                  ||  (searchTaskText != null && searchTaskText.trim() != '')
+                  || selectedPriorityFilter != null"
           aria-label="Clear"
           mat-button matSuffix>
           Сброс фильтров

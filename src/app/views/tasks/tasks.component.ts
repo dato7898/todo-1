@@ -8,6 +8,7 @@ import {EditTaskDialogComponent} from '../../dialog/edit-task-dialog/edit-task-d
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog.component';
 import {Category} from 'src/app/model/Category';
+import {Priority} from '../../model/Priority';
 
 @Component({
   selector: 'app-tasks',
@@ -25,8 +26,9 @@ export class TasksComponent implements OnInit {
 
   @Output() deleteTask = new EventEmitter<Task>();
   @Output() updateTask = new EventEmitter<Task>();
-  tasks: Task[];
 
+  @Input() priorities: Priority[];
+  tasks: Task[];
   @Input('tasks')
   private set setTasks(tasks: Task[]) {
     this.tasks = tasks;
@@ -36,10 +38,12 @@ export class TasksComponent implements OnInit {
   @Output() selectCategory = new EventEmitter<Category>();
   @Output() filterByTitle = new EventEmitter<string>();
   @Output() filterByStatus = new EventEmitter<boolean>();
+  @Output() filterByPriority = new EventEmitter<Priority>();
 
   // поиск
   searchTaskText: string; // текущее значение для поиска задач
   selectedStatusFilter: boolean = null;   // по-умолчанию будут показываться задачи по всем статусам (решенные и нерешенные)
+  selectedPriorityFilter: Priority = null;
 
   constructor(
     private dataHandler: DataHandlerService,
@@ -169,6 +173,13 @@ export class TasksComponent implements OnInit {
     if (value !== this.selectedStatusFilter) {
       this.selectedStatusFilter = value;
       this.filterByStatus.emit(this.selectedStatusFilter);
+    }
+  }
+
+  onFilterByPriority(priority: Priority) {
+    if (priority !== this.selectedPriorityFilter) {
+      this.selectedPriorityFilter = priority;
+      this.filterByPriority.emit(this.selectedPriorityFilter);
     }
   }
 }

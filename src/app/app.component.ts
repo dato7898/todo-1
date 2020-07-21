@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Task} from './model/Task';
 import {DataHandlerService} from './service/data-handler.service';
 import {Category} from './model/Category';
+import {Priority} from './model/Priority';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,7 @@ export class AppComponent implements OnInit {
   title = 'Todo';
   tasks: Task[];
   categories: Category[];
+  priorities: Priority[];
   selectedCategory: Category = null;
 
   // поиск
@@ -19,12 +21,14 @@ export class AppComponent implements OnInit {
 
   // фильтрация
   private statusFilter: boolean;
+  private priorityFilter: Priority;
 
   constructor(private dataHandler: DataHandlerService) {
   }
 
   ngOnInit(): void {
     this.dataHandler.getAllCategories().subscribe(categories => this.categories = categories);
+    this.dataHandler.getAllPriorities().subscribe(priorities => this.priorities = priorities);
     this.onSelectCategory(null);
   }
 
@@ -70,12 +74,18 @@ export class AppComponent implements OnInit {
     this.updateTasks();
   }
 
+  // фильрация задач по приоритету
+  onFilterTasksByPriority(priority: Priority) {
+    this.priorityFilter = priority;
+    this.updateTasks();
+  }
+
   private updateTasks() {
     this.dataHandler.searchTasks(
       this.selectedCategory,
       this.searchTaskText,
       this.statusFilter,
-      null
+      this.priorityFilter
     ).subscribe((tasks: Task[]) => this.tasks = tasks);
   }
 }

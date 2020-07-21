@@ -6,6 +6,7 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {EditTaskDialogComponent} from '../../dialog/edit-task-dialog/edit-task-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-tasks',
@@ -14,7 +15,7 @@ import {MatDialog} from '@angular/material/dialog';
 })
 export class TasksComponent implements OnInit {
   // поля для таблицы (те, что отображают данные из задачи - должны совпадать с названиями переменных класса)
-  displayedColumns: string[] = ['color', 'id', 'title', 'date', 'priority', 'category'];
+  displayedColumns: string[] = ['color', 'id', 'title', 'date', 'priority', 'category', 'operations', 'select'];
   dataSource: MatTableDataSource<Task>; // контейнер - источник данных для таблицы
 
   // ссылки на компоненты таблицы
@@ -40,10 +41,6 @@ export class TasksComponent implements OnInit {
     // датасорс обязательно нужно создавать для таблицы, в него присваивается любой источник (БД, массивы, JSON и пр.)
     this.dataSource = new MatTableDataSource();
     this.fillTable();
-  }
-
-  toggleTaskCompleted(task) {
-    task.completed = !task.completed;
   }
 
   // в зависимости от статуса задачи - вернуть цвет названия
@@ -126,5 +123,25 @@ export class TasksComponent implements OnInit {
         return;
       }
     });
+  }
+
+  // диалоговое окно подтверждения удаления
+  openDeleteDialog(task: Task) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '500px',
+      data: {dialogTitle: 'Подтвердите действие', message: `Вы действительно хотите удалить задачу: "${task.title}"?`},
+      autoFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { // если нажали ОК
+        this.deleteTask.emit(task);
+      }
+    });
+  }
+
+  onToggleStatus(task: Task) {
+    task.completed = !task.completed;
+    this.updateTask.emit(task);
   }
 }

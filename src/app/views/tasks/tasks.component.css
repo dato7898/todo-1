@@ -3,13 +3,10 @@
   color: #797979;
 }
 
-.no-value {
+.novalue {
   color: #b7b7b7;
 }
 
-.col-color {
-  width: 1% !important;
-}
 
 .col-id {
   width: 4%;
@@ -17,11 +14,7 @@
 }
 
 .col-title {
-  width:40%
-}
-
-.col-date {
-  width: 10% !important;
+  width: 40%;
 }
 
 .col-priority {
@@ -32,12 +25,21 @@
   width: 10%;
 }
 
+
 .col-select {
-  width: 2%;
+  width: 3%;
 }
 
 .col-operations {
   width: 10%;
+}
+
+.col-color {
+  width: 1% !important;
+}
+
+.col-date {
+  width: 10% !important;
 }
 
 .delete-icon {

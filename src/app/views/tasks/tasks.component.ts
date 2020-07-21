@@ -34,6 +34,12 @@ export class TasksComponent implements OnInit {
   }
 
   @Output() selectCategory = new EventEmitter<Category>();
+  @Output() filterByTitle = new EventEmitter<string>();
+  @Output() filterByStatus = new EventEmitter<boolean>();
+
+  // поиск
+  searchTaskText: string; // текущее значение для поиска задач
+  selectedStatusFilter: boolean = null;   // по-умолчанию будут показываться задачи по всем статусам (решенные и нерешенные)
 
   constructor(
     private dataHandler: DataHandlerService,
@@ -150,5 +156,19 @@ export class TasksComponent implements OnInit {
   onToggleStatus(task: Task) {
     task.completed = !task.completed;
     this.updateTask.emit(task);
+  }
+
+  // фильтрация по названию
+  onFilterByTitle() {
+    this.filterByTitle.emit(this.searchTaskText);
+  }
+
+  // фильтрация по статусу
+  onFilterByStatus(value: boolean) {
+    // на всякий случай проверяем изменилось ли значение (хотя сам UI компонент должен это делать)
+    if (value !== this.selectedStatusFilter) {
+      this.selectedStatusFilter = value;
+      this.filterByStatus.emit(this.selectedStatusFilter);
+    }
   }
 }

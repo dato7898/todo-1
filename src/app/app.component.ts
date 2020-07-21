@@ -14,23 +14,23 @@ export class AppComponent implements OnInit {
   categories: Category[];
   selectedCategory: Category = null;
 
+  // поиск
+  private searchTaskText = ''; // текущее значение для поиска задач
+
+  // фильтрация
+  private statusFilter: boolean;
+
   constructor(private dataHandler: DataHandlerService) {
   }
 
   ngOnInit(): void {
-    this.dataHandler.getAllTasks().subscribe(tasks => this.tasks = tasks);
     this.dataHandler.getAllCategories().subscribe(categories => this.categories = categories);
     this.onSelectCategory(null);
   }
 
   onSelectCategory(category: Category) {
     this.selectedCategory = category;
-    this.dataHandler.searchTasks(
-      this.selectedCategory,
-      null,
-      null,
-      null
-    ).subscribe(tasks => this.tasks = tasks);
+    this.updateTasks();
   }
 
   onUpdateCategory(category: Category) {
@@ -40,24 +40,14 @@ export class AppComponent implements OnInit {
   }
 
   onUpdateTask(task: Task) {
-    this.dataHandler.updateTask(task).subscribe(() => {
-      this.dataHandler.searchTasks(
-        this.selectedCategory,
-        null,
-        null,
-        null
-      ).subscribe(tasks => this.tasks = tasks);
+    this.dataHandler.updateTask(task).subscribe(cat => {
+      this.updateTasks();
     });
   }
 
   onDeleteTask(task: Task) {
-    this.dataHandler.deleteTask(task.id).subscribe(() => {
-      this.dataHandler.searchTasks(
-        this.selectedCategory,
-        null,
-        null,
-        null
-      ).subscribe(tasks => this.tasks = tasks);
+    this.dataHandler.deleteTask(task.id).subscribe(cat => {
+      this.updateTasks();
     });
   }
 
@@ -66,5 +56,26 @@ export class AppComponent implements OnInit {
       this.selectedCategory = null;
       this.onSelectCategory(this.selectedCategory);
     });
+  }
+
+  // поиск задач
+  onSearchTasks(searchString: string) {
+    this.searchTaskText = searchString;
+    this.updateTasks();
+  }
+
+  // фильтрация задач по статусу (все, решенные, нерешенные)
+  onFilterTasksByStatus(status: boolean) {
+    this.statusFilter = status;
+    this.updateTasks();
+  }
+
+  private updateTasks() {
+    this.dataHandler.searchTasks(
+      this.selectedCategory,
+      this.searchTaskText,
+      this.statusFilter,
+      null
+    ).subscribe((tasks: Task[]) => this.tasks = tasks);
   }
 }

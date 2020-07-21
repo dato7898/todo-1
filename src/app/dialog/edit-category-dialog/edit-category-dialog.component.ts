@@ -1,6 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {OperType} from '../OperType';
 
 @Component({
   selector: 'app-edit-category-dialog',
@@ -10,10 +11,11 @@ import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component
 export class EditCategoryDialogComponent implements OnInit {
   dialogTitle: string;
   categoryTitle: string;
+  private operType: OperType; // тип операции
 
   constructor(
     private dialogRef: MatDialogRef<EditCategoryDialogComponent>, // для возможности работы с текущим диалог. окном
-    @Inject(MAT_DIALOG_DATA) private data: [string, string], // данные, которые передали в диалоговое окно
+    @Inject(MAT_DIALOG_DATA) private data: [string, string, OperType], // данные, которые передали в диалоговое окно
     private dialog: MatDialog
   ) {
   }
@@ -21,6 +23,7 @@ export class EditCategoryDialogComponent implements OnInit {
   ngOnInit(): void {
     this.categoryTitle = this.data[0];
     this.dialogTitle = this.data[1];
+    this.operType = this.data[2];
   }
 
   onConfirm(): void {
@@ -49,6 +52,10 @@ export class EditCategoryDialogComponent implements OnInit {
         this.dialogRef.close('delete'); // нажали удалить
       }
     });
+  }
+
+  canDelete(): boolean {
+    return this.operType === OperType.EDIT;
   }
 
 }

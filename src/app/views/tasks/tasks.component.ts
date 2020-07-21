@@ -9,6 +9,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog.component';
 import {Category} from 'src/app/model/Category';
 import {Priority} from '../../model/Priority';
+import { OperType } from 'src/app/dialog/OperType';
 
 @Component({
   selector: 'app-tasks',
@@ -113,7 +114,7 @@ export class TasksComponent implements OnInit {
   openEditTaskDialog(task: Task) {
     // открытие диалогового окна
     const dialogRef = this.dialog.open(EditTaskDialogComponent, {
-      data: [task, 'Редактирование задачи'],
+      data: [task, 'Редактирование задачи', OperType.EDIT],
       autoFocus: false
     });
     dialogRef.afterClosed().subscribe(result => {
@@ -188,9 +189,9 @@ export class TasksComponent implements OnInit {
 
   // диалоговое окно для добавления задачи
   openAddTaskDialog() {
-    // тко же самое, что и при редактировании, но только передаем пустой объет Task
+    // то же самое, что и при редактировании, но только передаем пустой объет Task
     const task = new Task(null, '', false, null, this.selectedCategory);
-    const dialogRef = this.dialog.open(EditTaskDialogComponent, {data: [task, 'Добавление задачи']});
+    const dialogRef = this.dialog.open(EditTaskDialogComponent, {data: [task, 'Добавление задачи', OperType.ADD]});
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) { // если нажали ОК и есть результат

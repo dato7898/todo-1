@@ -4,8 +4,18 @@ import {Category} from 'src/app/model/Category';
 import {TestData} from '../../TestData';
 
 export class CategoryDAOArray implements CategoryDAO {
-  add(T): Observable<Category> {
-    return undefined;
+  add(category: Category): Observable<Category> {
+    // если id пустой - генерируем его
+    if (category.id === null || category.id === 0) {
+      category.id = this.getLastIdCategory();
+    }
+    TestData.categories.push(category);
+    console.log(category);
+    return of(category);
+  }
+
+  private getLastIdCategory() {
+    return Math.max.apply(Math, TestData.categories.map(category => category.id)) + 1;
   }
 
   delete(id: number): Observable<Category> {

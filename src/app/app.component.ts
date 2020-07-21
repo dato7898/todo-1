@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   title = 'Todo';
   tasks: Task[];
   categories: Category[];
-  private selectedCategory: Category = null;
+  selectedCategory: Category = null;
 
   constructor(private dataHandler: DataHandlerService) {
   }
@@ -30,9 +30,7 @@ export class AppComponent implements OnInit {
       null,
       null,
       null
-    ).subscribe(tasks => {
-      this.tasks = tasks;
-    });
+    ).subscribe(tasks => this.tasks = tasks);
   }
 
   onUpdateTask(task: Task) {

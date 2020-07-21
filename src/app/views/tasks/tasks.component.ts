@@ -7,6 +7,7 @@ import {MatSort} from '@angular/material/sort';
 import {EditTaskDialogComponent} from '../../dialog/edit-task-dialog/edit-task-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog.component';
+import {Category} from 'src/app/model/Category';
 
 @Component({
   selector: 'app-tasks',
@@ -31,6 +32,8 @@ export class TasksComponent implements OnInit {
     this.tasks = tasks;
     this.fillTable();
   }
+
+  @Output() selectCategory = new EventEmitter<Category>();
 
   constructor(
     private dataHandler: DataHandlerService,
@@ -123,6 +126,10 @@ export class TasksComponent implements OnInit {
         return;
       }
     });
+  }
+
+  onSelectCategory(category: Category) {
+    this.selectCategory.emit(category);
   }
 
   // диалоговое окно подтверждения удаления

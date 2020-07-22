@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 
 @Component({
   selector: 'app-stat',
@@ -15,7 +15,10 @@ export class StatComponent implements OnInit {
   @Input()
   uncompleteTasksInCategory: number; // кол-во нерешенных задач в категории
 
-  constructor() { }
+  @Input() showStat: boolean;
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }

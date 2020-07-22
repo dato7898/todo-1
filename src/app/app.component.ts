@@ -23,6 +23,9 @@ export class AppComponent implements OnInit {
   uncompletedCountInCategory: number;
   uncompletedTotalTasksCount: number;
 
+  // показать/скрыть статистику
+  showStat = true;
+
   // поиск
   private searchTaskText = ''; // текущее значение для поиска задач
   private searchCategoryText = ''; // текущее значение для поиска категорий
@@ -142,5 +145,10 @@ export class AppComponent implements OnInit {
         this.uncompletedCountInCategory = array[2];
         this.uncompletedTotalTasksCount = array[3]; // нужно для категории Все
       });
+  }
+
+  // показать-скрыть статистику
+  toggleStat(showStat: boolean) {
+    this.showStat = showStat;
   }
 }

@@ -1,4 +1,4 @@
-<div class="wrapper ">
+<div class="wrapper">
 
   <app-categories (selectCategory)="onSelectCategory($event)"
                   (updateCategory)="onUpdateCategory($event)"
@@ -9,12 +9,18 @@
                   [categories]="categories"></app-categories>
 
   <div class="main-panel">
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+      <div class="navbar-wrapper">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
 
-      <app-header></app-header>
+        <app-header
+          [categoryName]="selectedCategory ? selectedCategory.title: 'Все'"
+          (toggleStat)="toggleStat($event)"
+          [showStat]="showStat"
+        ></app-header>
 
-    </nav>
+      </nav>
+    </div>
     <!-- End Navbar -->
     <div class="content">
       <div class="container-fluid">
@@ -24,6 +30,7 @@
           [totalTasksInCategory]="totalTasksCountInCategory"
           [completeTasksInCategory]="completedCountInCategory"
           [uncompleteTasksInCategory]="uncompletedCountInCategory"
+          [showStat]="showStat"
         ></app-stat>
 
         <div class="row">
@@ -42,6 +49,8 @@
         </div>
       </div>
     </div>
+
     <app-footer></app-footer>
+
   </div>
 </div>

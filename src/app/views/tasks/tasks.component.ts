@@ -57,7 +57,8 @@ export class TasksComponent implements OnInit {
   ngOnInit(): void {
     // датасорс обязательно нужно создавать для таблицы, в него присваивается любой источник (БД, массивы, JSON и пр.)
     this.dataSource = new MatTableDataSource();
-    this.fillTable();
+    // Включает Paginator и Sort при первом входе на страницу
+    this.onSelectCategory(null);
   }
 
   // в зависимости от статуса задачи - вернуть цвет названия

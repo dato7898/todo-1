@@ -27,7 +27,7 @@ export class TaskDAOArray implements TaskDAO {
   }
 
   get(id: number): Observable<Task> {
-    return of(TestData.tasks.find(todo => todo.id === id));
+    return of(TestData.tasks.find(task => task.id === id));
   }
 
   getAll(): Observable<Task[]> {

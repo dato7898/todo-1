@@ -6,6 +6,9 @@
 
   <!--  список приоритетов с цветами-->
   <app-priorities
+    (deletePriority)="onDeletePriority($event)"
+    (updatePriority)="onUpdatePriority($event)"
+    (addPriority)="onAddPriority($event)"
     [priorities]="priorities">
   </app-priorities>
 

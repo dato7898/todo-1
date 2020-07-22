@@ -10,7 +10,6 @@ export class CategoryDAOArray implements CategoryDAO {
       category.id = this.getLastIdCategory();
     }
     TestData.categories.push(category);
-    console.log(category);
     return of(category);
   }
 
@@ -33,7 +32,7 @@ export class CategoryDAOArray implements CategoryDAO {
   }
 
   get(id: number): Observable<Category> {
-    return undefined;
+    return of(TestData.categories.find(category => category.id === id));
   }
 
   getAll(): Observable<Category[]> {

@@ -2,21 +2,25 @@
 
   <div class="row align-self-baseline">
     <div class="col-7 ">
-      <a class="pointer" > {{priority.title}}</a>
+      <a class="pointer" (click)="onUpdatePriority(priority)">
+        {{priority.title}}
+      </a>
     </div>
 
     <div class="col-2 text-right">
-      <span [(colorPicker)]="priority.color" [style.background]="priority.color" class="color-circle" ></span>
+      <span [(colorPicker)]="priority.color"
+            [style.background]="priority.color"
+            class="color-circle" ></span>
     </div>
 
     <div class="col-1 text-left">
-      <p class="pointer gray">
+      <p class="pointer gray" (click)="onDeletePriority(priority)">
         <mat-icon>delete</mat-icon>
       </p>
     </div>
 
     <div class="col-1 text-left">
-      <p class="pointer gray" >
+      <p class="pointer gray" (click)="onUpdatePriority(priority)">
         <mat-icon>edit</mat-icon>
       </p>
     </div>
@@ -24,7 +28,7 @@
 
 </div>
 
-<p class="link little" >
+<p class="link little" (click)="onAddPriority()">
   Добавить приоритет
 </p>
 

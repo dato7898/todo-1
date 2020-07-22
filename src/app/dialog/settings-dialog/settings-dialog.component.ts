@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Priority } from 'src/app/model/Priority';
-import { MatDialogRef } from '@angular/material/dialog';
-import { DataHandlerService } from 'src/app/service/data-handler.service';
+import {Component, OnInit} from '@angular/core';
+import {Priority} from 'src/app/model/Priority';
+import {MatDialogRef} from '@angular/material/dialog';
+import {DataHandlerService} from 'src/app/service/data-handler.service';
 
 @Component({
   selector: 'app-settings-dialog',
@@ -14,7 +14,8 @@ export class SettingsDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<SettingsDialogComponent>, // для возможности работы с текущим диалог. окном
     private dataHandler: DataHandlerService // ссылка на сервис для работы с данными
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     // получаем все значения, чтобы отобразить настроку цветов
@@ -24,6 +25,18 @@ export class SettingsDialogComponent implements OnInit {
   // нажали Закрыть
   onClose() {
     this.dialogRef.close(false);
+  }
+
+  onDeletePriority(priority: Priority) {
+    this.dataHandler.deletePriority(priority.id).subscribe();
+  }
+
+  onUpdatePriority(priority: Priority) {
+    this.dataHandler.updatePriority(priority).subscribe();
+  }
+
+  onAddPriority(priority: Priority) {
+    this.dataHandler.addPriority(priority).subscribe();
   }
 
 }

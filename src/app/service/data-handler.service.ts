@@ -63,7 +63,6 @@ export class DataHandlerService {
   }
 
   // статистика
-
   getCompletedCountInCategory(category: Category): Observable<number> {
     return this.taskDaoArray.getCompletedCountInCategory(category);
   }
@@ -78,5 +77,17 @@ export class DataHandlerService {
 
   getTotalCountInCategory(category: Category): Observable<number> {
     return this.taskDaoArray.getTotalCountInCategory(category);
+  }
+
+  addPriority(priority: Priority): Observable<Priority> {
+    return this.priorityDaoArray.add(priority);
+  }
+
+  updatePriority(priority: Priority): Observable<Priority> {
+    return this.priorityDaoArray.update(priority);
+  }
+
+  deletePriority(id: number): Observable<Priority> {
+    return this.priorityDaoArray.delete(id);
   }
 }

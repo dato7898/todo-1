@@ -9,7 +9,7 @@ export interface TaskDAO extends CommonDAO<Task> {
 
   getCompletedCountInCategory(category: Category): Observable<number>;
 
-  getUnCompletedCountInCategory(category: Category): Observable<number>;
+  getUncompletedCountInCategory(category: Category): Observable<number>;
 
   getTotalCountInCategory(category: Category): Observable<number>;
 

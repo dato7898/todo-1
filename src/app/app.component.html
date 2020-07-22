@@ -5,6 +5,8 @@
                   (deleteCategory)="onDeleteCategory($event)"
                   (searchCategory)="onSearchCategory($event)"
                   (addCategory)="onAddCategory($event)"
+                  [categoryMap]="categoryMap"
+                  [uncompletedTotal]="uncompletedTotalTasksCount"
                   [selectedCategory]="selectedCategory"
                   [categories]="categories"></app-categories>
 

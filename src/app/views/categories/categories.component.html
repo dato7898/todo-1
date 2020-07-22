@@ -1,18 +1,16 @@
-<div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
-  <!--
-    Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+<div class="sidebar" data-color="purple" data-background-color="white">
 
-    Tip 2: you can also add an image using data-image tag
--->
-  <div class="logo">
-    <span class="nav-title">Категории</span>
-    <!-- иконка добавления новой категории -->
-    <span class="add-icon-area">
-      <button mat-icon-button class="add-icon"
-              (click)="openAddCategoryDialog()">
-        <mat-icon>add</mat-icon>
-      </button>
-    </span>
+  <div id="categories">
+    <div class="logo">
+      <span class="nav-title">Категории</span>
+      <!-- иконка добавления новой категории -->
+      <span class="add-icon-area">
+        <button mat-icon-button class="add-icon"
+                (click)="openAddCategoryDialog()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </span>
+    </div>
   </div>
 
   <div class="sidebar-wrapper">
@@ -77,4 +75,7 @@
       </li>
     </ul>
   </div>
+
+  <div class="sidebar-background"></div>
+
 </div>

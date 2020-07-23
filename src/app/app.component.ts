@@ -33,12 +33,12 @@ export class AppComponent implements OnInit {
   showStat = true;
 
   // поиск
-  private searchTaskText = ''; // текущее значение для поиска задач
-  private searchCategoryText = ''; // текущее значение для поиска категорий
+  searchTaskText = ''; // текущее значение для поиска задач
+  searchCategoryText = ''; // текущее значение для поиска категорий
 
   // фильтрация
-  private statusFilter: boolean;
-  private priorityFilter: Priority;
+  statusFilter: boolean;
+  priorityFilter: Priority;
 
   // параметры бокового меню с категориями
   menuOpened: boolean; // открыть-закрыть
@@ -47,8 +47,8 @@ export class AppComponent implements OnInit {
   showBackdrop: boolean; // показывать фоновое затемнение или нет
 
   // тип устройства
-  private isMobile: boolean;
-  private isTablet: boolean;
+  isMobile: boolean;
+  isTablet: boolean;
 
   constructor(private dataHandler: DataHandlerService,
               private introService: IntroService,
@@ -79,7 +79,7 @@ export class AppComponent implements OnInit {
   }
 
   // заполняет категории и кол-во невыполненных задач по каждой из них (нужно для отображения категорий)
-  private fillCategories() {
+  fillCategories() {
     if (this.categoryMap) {
       this.categoryMap.clear();
     }
@@ -156,7 +156,7 @@ export class AppComponent implements OnInit {
     this.updateTasks();
   }
 
-  private updateTasks() {
+  updateTasks() {
     this.dataHandler.searchTasks(
       this.selectedCategory,
       this.searchTaskText,
@@ -200,7 +200,7 @@ export class AppComponent implements OnInit {
   }
 
   // показывает задачи с применением всех текущий условий (категория, поиск, фильтры и пр.)
-  private updateTasksAndStat() {
+  updateTasksAndStat() {
     this.updateTasks(); // обновить список задач
 
     // обновить переменные для статистики
@@ -208,7 +208,7 @@ export class AppComponent implements OnInit {
   }
 
   // обновить статистику
-  private updateStat() {
+  updateStat() {
     zip(
       this.dataHandler.getTotalCountInCategory(this.selectedCategory),
       this.dataHandler.getCompletedCountInCategory(this.selectedCategory),
@@ -234,7 +234,7 @@ export class AppComponent implements OnInit {
   }
 
   // параметры меню
-  private setMenuValues() {
+  setMenuValues() {
     this.menuPosition = 'left'; // меню слева
 
     // настройки бокового меню для моб. и десктоп вариантов

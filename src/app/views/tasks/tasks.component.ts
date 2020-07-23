@@ -80,7 +80,7 @@ export class TasksComponent implements OnInit {
   }
 
   // показывает задачи с применением всех текущий условий (категория, поиск, фильтры и пр.)
-  private fillTable() {
+  fillTable() {
     if (!this.dataSource) {
       return;
     }
@@ -112,7 +112,7 @@ export class TasksComponent implements OnInit {
     };
   }
 
-  private addTableObjects() {
+  addTableObjects() {
     this.dataSource.sort = this.sort; // компонент для сортировки данных (если необходимо)
     this.dataSource.paginator = this.paginator; // обновить компонент постраничности (кол-во записей, страниц)
   }

@@ -13,7 +13,7 @@ export class CategoryDAOArray implements CategoryDAO {
     return of(category);
   }
 
-  private getLastIdCategory() {
+  getLastIdCategory() {
     return Math.max.apply(Math, TestData.categories.map(category => category.id)) + 1;
   }
 

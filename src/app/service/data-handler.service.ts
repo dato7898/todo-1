@@ -11,9 +11,9 @@ import {PriorityDAOArray} from '../data/dao/impl/PriorityDAOArray';
   providedIn: 'root'
 })
 export class DataHandlerService {
-  private taskDaoArray = new TaskDAOArray();
-  private categoryDaoArray = new CategoryDAOArray();
-  private priorityDaoArray = new PriorityDAOArray();
+  taskDaoArray = new TaskDAOArray();
+  categoryDaoArray = new CategoryDAOArray();
+  priorityDaoArray = new PriorityDAOArray();
 
   constructor() {
   }

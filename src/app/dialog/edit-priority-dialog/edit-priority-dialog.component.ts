@@ -11,7 +11,7 @@ import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component
 export class EditPriorityDialogComponent implements OnInit {
   dialogTitle: string;
   priorityTitle: string;
-  private operType: OperType; // тип операции
+  operType: OperType; // тип операции
 
   constructor(
     private dialogRef: MatDialogRef<EditPriorityDialogComponent>, // для возможности работы с текущим диалог. окном

@@ -11,7 +11,7 @@ import {OperType} from '../OperType';
 export class EditCategoryDialogComponent implements OnInit {
   dialogTitle: string;
   categoryTitle: string;
-  private operType: OperType; // тип операции
+  operType: OperType; // тип операции
 
   constructor(
     private dialogRef: MatDialogRef<EditCategoryDialogComponent>, // для возможности работы с текущим диалог. окном

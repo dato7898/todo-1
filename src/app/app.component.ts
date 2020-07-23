@@ -5,6 +5,7 @@ import {Category} from './model/Category';
 import {Priority} from './model/Priority';
 import {zip} from 'rxjs';
 import {concatMap, map} from 'rxjs/operators';
+import {IntroService} from './service/intro.service';
 
 @Component({
   selector: 'app-root',
@@ -38,7 +39,8 @@ export class AppComponent implements OnInit {
   private statusFilter: boolean;
   private priorityFilter: Priority;
 
-  constructor(private dataHandler: DataHandlerService) {
+  constructor(private dataHandler: DataHandlerService,
+              private introService: IntroService) {
   }
 
   ngOnInit(): void {
@@ -48,6 +50,8 @@ export class AppComponent implements OnInit {
     // заполнить меню с категориями
     this.fillCategories();
     this.onSelectCategory(null);
+
+    this.introService.startIntroJS(true);
   }
 
   // заполняет категории и кол-во невыполненных задач по каждой из них (нужно для отображения категорий)

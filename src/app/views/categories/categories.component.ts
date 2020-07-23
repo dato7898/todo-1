@@ -4,6 +4,7 @@ import {Category} from '../../model/Category';
 import {MatDialog} from '@angular/material/dialog';
 import {EditCategoryDialogComponent} from 'src/app/dialog/edit-category-dialog/edit-category-dialog.component';
 import {OperType} from 'src/app/dialog/OperType';
+import {DeviceDetectorService} from 'ngx-device-detector';
 
 @Component({
   selector: 'app-categories',
@@ -24,11 +25,16 @@ export class CategoriesComponent implements OnInit {
   // для отображения иконки редактирования при наведении на категорию
   indexMouseMove: number;
   searchCategoryTitle: string; // текущее значение для поиска категорий
+  isMobile: boolean;
+  isTablet: boolean;
 
   constructor(
     private dataHandler: DataHandlerService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private deviceDetector: DeviceDetectorService
   ) {
+    this.isMobile = deviceDetector.isMobile();
+    this.isTablet = deviceDetector.isTablet();
   }
 
   ngOnInit(): void {

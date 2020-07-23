@@ -10,6 +10,7 @@ import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog
 import {Category} from 'src/app/model/Category';
 import {Priority} from '../../model/Priority';
 import { OperType } from 'src/app/dialog/OperType';
+import {DeviceDetectorService} from 'ngx-device-detector';
 
 @Component({
   selector: 'app-tasks',
@@ -47,11 +48,16 @@ export class TasksComponent implements OnInit {
   selectedStatusFilter: boolean = null;   // по-умолчанию будут показываться задачи по всем статусам (решенные и нерешенные)
   selectedPriorityFilter: Priority = null;
 
+  isMobile: boolean;
+
   @Input() selectedCategory: Category;
 
   constructor(
     private dataHandler: DataHandlerService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private deviceService: DeviceDetectorService // для определения типа устройства
+  ) {
+    this.isMobile = this.deviceService.isMobile();
   }
 
   ngOnInit(): void {
@@ -199,5 +205,13 @@ export class TasksComponent implements OnInit {
         this.addTask.emit(task);
       }
     });
+  }
+
+  // в зависимости от статуса задачи - вернуть фоноввый цвет
+  getMobilePriorityBgColor(task: Task) {
+    if (task.priority != null && !task.completed) {
+      return task.priority.color;
+    }
+    return 'none';
   }
 }

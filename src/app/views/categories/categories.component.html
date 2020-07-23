@@ -64,7 +64,7 @@
         <!-- кнопка редактирования категории -->
         <span class="edit-category-icon-area">
           <mat-icon
-            *ngIf="indexMouseMove === index"
+            *ngIf="isMobile || isTablet || indexMouseMove === index"
             (click)="$event.stopPropagation(); openEditCategoryDialog(mapValue.key)"
             class="edit-category-icon">
             edit

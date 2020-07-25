@@ -35,6 +35,11 @@ import { SettingsDialogComponent } from './dialog/settings-dialog/settings-dialo
 import { EditPriorityDialogComponent } from './dialog/edit-priority-dialog/edit-priority-dialog.component';
 import {SidebarModule} from 'ng-sidebar';
 import {DeviceDetectorModule} from 'ngx-device-detector';
+import {HttpClientModule} from '@angular/common/http';
+import { STAT_URL_TOKEN } from './data/dao/impl/StatService';
+import {PRIORITY_URL_TOKEN} from './data/dao/impl/PriorityService';
+import {CATEGORY_URL_TOKEN} from './data/dao/impl/CategoryService';
+import {TASK_URL_TOKEN} from './data/dao/impl/TaskService';
 
 registerLocaleData(localeRu);
 
@@ -75,9 +80,32 @@ registerLocaleData(localeRu);
     MatCheckboxModule,
     ColorPickerModule,
     SidebarModule,
-    DeviceDetectorModule.forRoot()
+    DeviceDetectorModule.forRoot(),
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: TASK_URL_TOKEN,
+      useValue: 'http://localhost:8080/task'
+    },
+
+    {
+      provide: CATEGORY_URL_TOKEN,
+      useValue: 'http://localhost:8080/category'
+    },
+
+
+    {
+      provide: PRIORITY_URL_TOKEN,
+      useValue: 'http://localhost:8080/priority'
+    },
+
+
+    {
+      provide: STAT_URL_TOKEN,
+      useValue: 'http://localhost:8080/stat'
+    }
+  ],
   entryComponents: [
     EditTaskDialogComponent,
     ConfirmDialogComponent,

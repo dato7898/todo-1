@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs';
 import {Stat} from '../../../model/Stat';
 
-export interface StatDao {
+export interface StatDAO {
 
   getOverallStat(): Observable<Stat>;
 

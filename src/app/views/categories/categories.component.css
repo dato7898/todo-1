@@ -1,4 +1,4 @@
-.pointer {
+.title, .category {
   cursor: pointer;
 }
 
@@ -78,4 +78,18 @@ span.add-icon-area {
   width: 15%;
   display: inline-block;
   text-align: center;
+}
+
+.sidebar a {
+  font-size: 16px !important;
+}
+
+.color-circle {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 30px;
+  border: 1px solid #dadada;
+
 }

@@ -19,15 +19,16 @@
          data-intro="Фильтрация задач, добавление/удаление/редактирование категорий"
          data-position='right'>
 
-      <app-categories (selectCategory)="onSelectCategory($event)"
-                      (updateCategory)="onUpdateCategory($event)"
-                      (deleteCategory)="onDeleteCategory($event)"
-                      (searchCategory)="onSearchCategory($event)"
-                      (addCategory)="onAddCategory($event)"
-                      [categoryMap]="categoryMap"
-                      [uncompletedTotal]="uncompletedTotalTasksCount"
+      <app-categories (selectCategory)="selectCategory($event)"
+                      (updateCategory)="updateCategory($event)"
+                      (deleteCategory)="deleteCategory($event)"
+                      (searchCategory)="searchCategory($event)"
+                      (addCategory)="addCategory($event)"
+
+                      [uncompletedCountForCategoryAll]="uncompletedCountForCategoryAll"
                       [selectedCategory]="selectedCategory"
-                      [categories]="categories"></app-categories>
+                      [categories]="categories"
+      ></app-categories>
 
     </div>
 
@@ -42,12 +43,12 @@
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
 
-          <app-header
-            (toggleMenu)="toggleMenu()"
-            [categoryName]="selectedCategory ? selectedCategory.title: 'Все'"
-            (toggleStat)="toggleStat($event)"
-            [showStat]="showStat"
-          ></app-header>
+<!--          <app-header-->
+<!--            (toggleMenu)="toggleMenu()"-->
+<!--            [categoryName]="selectedCategory ? selectedCategory.title: 'Все'"-->
+<!--            (toggleStat)="toggleStat($event)"-->
+<!--            [showStat]="showStat"-->
+<!--          ></app-header>-->
 
         </nav>
       </div>
@@ -60,27 +61,27 @@
                data-position='top'>
 
             <!-- Статистика -->
-            <app-stat
-              [totalTasksInCategory]="totalTasksCountInCategory"
-              [completeTasksInCategory]="completedCountInCategory"
-              [uncompleteTasksInCategory]="uncompletedCountInCategory"
-              [showStat]="showStat"
-            ></app-stat>
+<!--            <app-stat-->
+<!--              [totalTasksInCategory]="totalTasksCountInCategory"-->
+<!--              [completeTasksInCategory]="completedCountInCategory"-->
+<!--              [uncompleteTasksInCategory]="uncompletedCountInCategory"-->
+<!--              [showStat]="showStat"-->
+<!--            ></app-stat>-->
 
           </div>
 
           <div class="row">
             <div class="col-12">
-              <app-tasks (updateTask)="onUpdateTask($event)"
-                         (deleteTask)="onDeleteTask($event)"
-                         (addTask)="onAddTask($event)"
-                         (selectCategory)="onSelectCategory($event)"
-                         (filterByStatus)="onFilterTasksByStatus($event)"
-                         (filterByPriority)="onFilterTasksByPriority($event)"
-                         (filterByTitle)="onSearchTasks($event)"
-                         [tasks]="tasks"
-                         [priorities]="priorities"
-                         [selectedCategory]="selectedCategory"></app-tasks>
+<!--              <app-tasks (updateTask)="onUpdateTask($event)"-->
+<!--                         (deleteTask)="onDeleteTask($event)"-->
+<!--                         (addTask)="onAddTask($event)"-->
+<!--                         (selectCategory)="onSelectCategory($event)"-->
+<!--                         (filterByStatus)="onFilterTasksByStatus($event)"-->
+<!--                         (filterByPriority)="onFilterTasksByPriority($event)"-->
+<!--                         (filterByTitle)="onSearchTasks($event)"-->
+<!--                         [tasks]="tasks"-->
+<!--                         [priorities]="priorities"-->
+<!--                         [selectedCategory]="selectedCategory"></app-tasks>-->
             </div>
           </div>
         </div>

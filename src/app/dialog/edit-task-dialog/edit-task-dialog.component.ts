@@ -1,6 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {DataHandlerService} from '../../service/data-handler.service';
 import {Task} from 'src/app/model/Task';
 import {Category} from 'src/app/model/Category';
 import {Priority} from 'src/app/model/Priority';
@@ -26,7 +25,6 @@ export class EditTaskDialogComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<EditTaskDialogComponent>, // для возможности работы с текущим диалог. окном
     @Inject(MAT_DIALOG_DATA) private data: [Task, string, OperType], // данные, которые передали в диалоговое окно
-    private dataHandler: DataHandlerService,
     private dialog: MatDialog
   ) {
   }
@@ -39,8 +37,8 @@ export class EditTaskDialogComponent implements OnInit {
     this.tmpCategory = this.task.category;
     this.tmpPriority = this.task.priority;
     this.tmpDate = this.task.date;
-    this.dataHandler.getAllCategories().subscribe(items => this.categories = items);
-    this.dataHandler.getAllPriorities().subscribe(items => this.priorities = items);
+    // this.dataHandler.getAllCategories().subscribe(items => this.categories = items);
+    // this.dataHandler.getAllPriorities().subscribe(items => this.priorities = items);
   }
 
   onConfirm(): void {

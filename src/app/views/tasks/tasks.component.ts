@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewChild, Input, Output, EventEmitter} from '@angular/core';
-import {DataHandlerService} from '../../service/data-handler.service';
 import {Task} from 'src/app/model/Task';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatPaginator} from '@angular/material/paginator';
@@ -53,7 +52,6 @@ export class TasksComponent implements OnInit {
   @Input() selectedCategory: Category;
 
   constructor(
-    private dataHandler: DataHandlerService,
     private dialog: MatDialog,
     private deviceService: DeviceDetectorService // для определения типа устройства
   ) {

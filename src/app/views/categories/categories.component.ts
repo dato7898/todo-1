@@ -1,5 +1,4 @@
 import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
-import {DataHandlerService} from '../../service/data-handler.service';
 import {Category} from '../../model/Category';
 import {MatDialog} from '@angular/material/dialog';
 import {EditCategoryDialogComponent} from 'src/app/dialog/edit-category-dialog/edit-category-dialog.component';
@@ -12,11 +11,15 @@ import {DeviceDetectorService} from 'ngx-device-detector';
   styleUrls: ['./categories.component.css']
 })
 export class CategoriesComponent implements OnInit {
-  @Input() categories: Category[];
-  @Output() selectCategory = new EventEmitter<Category>();
+  categories: Category[];
+  @Input('categories')
+  set setCategories(categories: Category[]) {
+    this.categories = categories;
+  }
   @Input() selectedCategory: Category;
-  @Input() categoryMap: Map<Category, number>;
-  @Input() uncompletedTotal: number;
+  @Input() uncompletedCountForCategoryAll: number;
+
+  @Output() selectCategory = new EventEmitter<Category>();
   @Output() deleteCategory = new EventEmitter<Category>();
   @Output() updateCategory = new EventEmitter<Category>();
   @Output() addCategory = new EventEmitter<string>();
@@ -29,7 +32,6 @@ export class CategoriesComponent implements OnInit {
   isTablet: boolean;
 
   constructor(
-    private dataHandler: DataHandlerService,
     private dialog: MatDialog,
     private deviceDetector: DeviceDetectorService
   ) {

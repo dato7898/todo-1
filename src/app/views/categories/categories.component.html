@@ -17,7 +17,6 @@
 
         <mat-form-field class="example-full-width">
           <input
-            #inputSearchCategory
             (keydown.escape)="clearAndSearch()"
             (ngModelChange)="checkFilterChanged()"
             [(ngModel)]="filterTitle"

@@ -8,14 +8,13 @@
     <mat-label>Название (15 символов)</mat-label>
     <input
       #inputTitle
-      (keydown.enter)="onConfirm()"
-      [(ngModel)]="categoryTitle"
+      (keydown.enter)="confirm()"
+      [(ngModel)]="category.title"
       matInput maxlength="15"> <!-- по нажатию на enter можем сразу сохранить категорию -->
     <button
-      (click)="categoryTitle= ''"
-      *ngIf="categoryTitle.trim().length > 0" aria-label="Clear"
-      class="size25" mat-button
-      mat-icon-button matSuffix>
+      (click)="category.title=''"
+      *ngIf="category.title.trim().length > 0"
+      aria-label="Clear" mat-button mat-icon-button matSuffix>
       <mat-icon>clear</mat-icon>
     </button>
 
@@ -28,7 +27,7 @@
 
   <div class="col-12 text-center">
     <button
-      (click)="onConfirm()"
+      (click)="confirm()"
       color="primary" mat-raised-button
       [disabled]="inputTitle.value.trim().length==0">  <!-- если пустой текст - кнопка "Сохранить" будет недоступна -->
       Сохранить
@@ -38,7 +37,7 @@
 
   <div class="col-12 text-center">
     <button
-      *ngIf="canDelete()"
+      *ngIf="canDelete"
       mat-button class="red"
       (click)="delete()">
       Удалить категорию

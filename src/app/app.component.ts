@@ -70,20 +70,21 @@ export class AppComponent implements OnInit {
 
   addCategory(category: Category) {
     this.categoryService.add(category).subscribe(result => {
-
+        // если вызов сервиса завершился успешно - добавляем новую категорию в локальный массив
+        this.searchCategory(this.categoryTo); // обновляем список категорий
       }
     );
   }
 
   deleteCategory(category: Category) {
     this.categoryService.delete(category.id).subscribe(cat => {
-
+      this.searchCategory(this.categoryTo); // обновляем список категорий
     });
   }
 
   updateCategory(category: Category) {
     this.categoryService.update(category).subscribe(() => {
-
+      this.searchCategory(this.categoryTo); // обновляем список категорий
     });
   }
 

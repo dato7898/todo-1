@@ -1,10 +1,10 @@
-import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Category} from '../../model/Category';
 import {MatDialog} from '@angular/material/dialog';
 import {EditCategoryDialogComponent} from 'src/app/dialog/edit-category-dialog/edit-category-dialog.component';
-import {OperType} from 'src/app/dialog/OperType';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {CategoryTo} from '../../data/dao/to/ObjectsTo';
+import {DialogAction} from '../../object/DialogResult';
 
 @Component({
   selector: 'app-categories',
@@ -26,7 +26,7 @@ export class CategoriesComponent implements OnInit {
   @Output() selectCategory = new EventEmitter<Category>();
   @Output() deleteCategory = new EventEmitter<Category>();
   @Output() updateCategory = new EventEmitter<Category>();
-  @Output() addCategory = new EventEmitter<string>();
+  @Output() addCategory = new EventEmitter<Category>();
   @Output() searchCategory = new EventEmitter<CategoryTo>(); // передаем строку для поиска
 
   // для отображения иконки редактирования при наведении на категорию
@@ -51,12 +51,45 @@ export class CategoriesComponent implements OnInit {
 
   // диалоговое окно для добавления категории
   openAddDialog() {
+    const dialogRef = this.dialog.open(EditCategoryDialogComponent, {
+      // передаем новый пустой объект для заполнения
+      data: [new Category(null, ''), 'Добавление категории'],
+      width: '400px'
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (!(result)) { // если просто закрыли окно, ничего не нажав
+        return;
+      }
+
+      if (result.action === DialogAction.SAVE) {
+        this.addCategory.emit(result.obj as Category); // вызываем внешний обработчик
+      }
+    });
   }
 
   // диалоговое окно для редактирования категории
   openEditDialog(category: Category) {
+    const dialogRef = this.dialog.open(EditCategoryDialogComponent, {
+      // передаем копию объекта, чтобы все изменения не касались оригинала (чтобы их можно было отменить)
+      data: [new Category(category.id, category.title), 'Редактирование категории'], width: '400px'
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (!(result)) { // если просто закрыли окно, ничего не нажав
+        return;
+      }
+
+      if (result.action === DialogAction.DELETE) { // нажали удалить
+        this.deleteCategory.emit(category); // вызываем внешний обработчик
+        return;
+      }
+
+      if (result.action === DialogAction.SAVE) { // нажали сохранить (обрабатывает как добавление, так и удаление)
+        this.updateCategory.emit(result.obj as Category); // вызываем внешний обработчик
+        return;
+      }
+    });
   }
 
   // поиск категории

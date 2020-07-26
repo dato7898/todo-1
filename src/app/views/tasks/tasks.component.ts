@@ -1,15 +1,16 @@
 import {Component, OnInit, ViewChild, Input, Output, EventEmitter} from '@angular/core';
 import {Task} from 'src/app/model/Task';
 import {MatTableDataSource} from '@angular/material/table';
-import {MatPaginator} from '@angular/material/paginator';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {EditTaskDialogComponent} from '../../dialog/edit-task-dialog/edit-task-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog.component';
 import {Category} from 'src/app/model/Category';
 import {Priority} from '../../model/Priority';
-import { OperType } from 'src/app/dialog/OperType';
+import {OperType} from 'src/app/dialog/OperType';
 import {DeviceDetectorService} from 'ngx-device-detector';
+import {TaskTo} from '../../data/dao/to/ObjectsTo';
 
 @Component({
   selector: 'app-tasks',
@@ -19,37 +20,32 @@ import {DeviceDetectorService} from 'ngx-device-detector';
 export class TasksComponent implements OnInit {
   // поля для таблицы (те, что отображают данные из задачи - должны совпадать с названиями переменных класса)
   displayedColumns: string[] = ['color', 'id', 'title', 'date', 'priority', 'category', 'operations', 'select'];
-  dataSource: MatTableDataSource<Task>; // контейнер - источник данных для таблицы
+  dataSource = new MatTableDataSource<Task>(); // контейнер - источник данных для таблицы
 
-  // ссылки на компоненты таблицы
-  @ViewChild(MatPaginator, {static: false}) private paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) private sort: MatSort;
+  @Input() totalTasksFounded: number; // сколько всего задач найдено
+  @Input() taskTo: TaskTo;
+  tasks: Task[];
+
+  @Input('tasks')
+  set setTasks(tasks: Task[]) {
+    this.tasks = tasks;
+    this.assignTableSource();   // передать данные таблице для отображения задач
+  }
 
   @Output() deleteTask = new EventEmitter<Task>();
   @Output() updateTask = new EventEmitter<Task>();
   @Output() addTask = new EventEmitter<Task>();
-
-  @Input() priorities: Priority[];
-  tasks: Task[];
-  @Input('tasks')
-  private set setTasks(tasks: Task[]) {
-    this.tasks = tasks;
-    this.fillTable();
-  }
-
   @Output() selectCategory = new EventEmitter<Category>();
-  @Output() filterByTitle = new EventEmitter<string>();
-  @Output() filterByStatus = new EventEmitter<boolean>();
-  @Output() filterByPriority = new EventEmitter<Priority>();
+  @Output()
+  paging = new EventEmitter<PageEvent>(); // переход по страницам данных
+  @Output()
+  searchAction = new EventEmitter<TaskTo>(); // переход по страницам данных
 
-  // поиск
-  searchTaskText: string; // текущее значение для поиска задач
-  selectedStatusFilter: boolean = null;   // по-умолчанию будут показываться задачи по всем статусам (решенные и нерешенные)
-  selectedPriorityFilter: Priority = null;
+  // цвета
+  readonly colorCompletedTask = '#F8F9FA';
+  readonly colorWhite = '#fff';
 
   isMobile: boolean;
-
-  @Input() selectedCategory: Category;
 
   constructor(
     private dialog: MatDialog,
@@ -59,157 +55,62 @@ export class TasksComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+  }
+
+  // передать данные таблице для отображения задач
+  assignTableSource() {
     // датасорс обязательно нужно создавать для таблицы, в него присваивается любой источник (БД, массивы, JSON и пр.)
-    this.dataSource = new MatTableDataSource();
-    // Включает Paginator и Sort при первом входе на страницу
-    this.onSelectCategory(null);
-  }
-
-  // в зависимости от статуса задачи - вернуть цвет названия
-  getPriorityColor(task: Task): string {
-    // цвет завершенной задачи
-    if (task.completed) {
-      return '#F8F9FA';
-    }
-    if (task.priority && task.priority.color) {
-      return task.priority.color;
-    }
-    return '#fff';
-  }
-
-  // показывает задачи с применением всех текущий условий (категория, поиск, фильтры и пр.)
-  fillTable() {
     if (!this.dataSource) {
       return;
     }
-
+    console.log(this.tasks);
     this.dataSource.data = this.tasks; // обновить источник данных (т.к. данные массива tasks обновились)
-    this.addTableObjects();
-
-    // когда получаем новые данные..
-    // чтобы можно было сортировать по столбцам "категория" и "приоритет", т.к. там не примитивные типы, а объекты
-    // @ts-ignore - показывает ошибку для типа даты, но так работает, т.к. можно возвращать любой тип
-    this.dataSource.sortingDataAccessor = (task, colName) => {
-
-      // по каким полям выполнять сортировку для каждого столбца
-      switch (colName) {
-        case 'priority': {
-          return task.priority ? task.priority.id : null;
-        }
-        case 'category': {
-          return task.category ? task.category.title : null;
-        }
-        case 'date': {
-          return task.date ? task.date : null;
-        }
-
-        case 'title': {
-          return task.title;
-        }
-      }
-    };
   }
 
-  addTableObjects() {
-    this.dataSource.sort = this.sort; // компонент для сортировки данных (если необходимо)
-    this.dataSource.paginator = this.paginator; // обновить компонент постраничности (кол-во записей, страниц)
+  // диалоговое окно для добавления задачи
+  openAddDialog() {
+
   }
 
-  // диалоговое окно для редактирования и добавления задачи
-  openEditDialog(task: Task) {
-    // открытие диалогового окна
-    const dialogRef = this.dialog.open(EditTaskDialogComponent, {
-      data: [task, 'Редактирование задачи', OperType.EDIT],
-      autoFocus: false
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'activate') {
-        task.completed = false;
-        this.updateTask.emit(task);
-        return;
-      }
+  // диалоговое редактирования для добавления задачи
+  openEditDialog(task: Task): void {
 
-      if (result === 'complete') {
-        task.completed = true;
-        this.updateTask.emit(task);
-        return;
-      }
-
-      if (result === 'delete') {
-        this.deleteTask.emit(task);
-        return;
-      }
-
-      if (result as Task) { // если нажали ОК и есть результат
-        this.updateTask.emit(task);
-        return;
-      }
-    });
-  }
-
-  onSelectCategory(category: Category) {
-    this.selectCategory.emit(category);
   }
 
   // диалоговое окно подтверждения удаления
   openDeleteDialog(task: Task) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      maxWidth: '500px',
-      data: {dialogTitle: 'Подтвердите действие', message: `Вы действительно хотите удалить задачу: "${task.title}"?`},
-      autoFocus: false
-    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) { // если нажали ОК
-        this.deleteTask.emit(task);
-      }
-    });
   }
 
-  onToggleStatus(task: Task) {
-    task.completed = !task.completed;
-    this.updateTask.emit(task);
+  // нажали/отжали выполнение задачи
+  onToggleCompleted(task: Task) {
+
   }
 
-  // фильтрация по названию
-  onFilterByTitle() {
-    this.filterByTitle.emit(this.searchTaskText);
-  }
-
-  // фильтрация по статусу
-  onFilterByStatus(value: boolean) {
-    // на всякий случай проверяем изменилось ли значение (хотя сам UI компонент должен это делать)
-    if (value !== this.selectedStatusFilter) {
-      this.selectedStatusFilter = value;
-      this.filterByStatus.emit(this.selectedStatusFilter);
+  // в зависимости от статуса задачи - вернуть цвет названия
+  getPriorityColor(task: Task): string {
+    // если задача завершена - возвращаем цвет
+    if (task.completed) {
+      return this.colorCompletedTask;
     }
-  }
-
-  onFilterByPriority(priority: Priority) {
-    if (priority !== this.selectedPriorityFilter) {
-      this.selectedPriorityFilter = priority;
-      this.filterByPriority.emit(this.selectedPriorityFilter);
+    // вернуть цвет приоритета, если он указан
+    if (task.priority && task.priority.color) {
+      return task.priority.color;
     }
+    return this.colorWhite;
   }
 
-  // диалоговое окно для добавления задачи
-  openAddTaskDialog() {
-    // то же самое, что и при редактировании, но только передаем пустой объет Task
-    const task = new Task(null, '', false, null, this.selectedCategory);
-    const dialogRef = this.dialog.open(EditTaskDialogComponent, {data: [task, 'Добавление задачи', OperType.ADD]});
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) { // если нажали ОК и есть результат
-        this.addTask.emit(task);
-      }
-    });
-  }
-
-  // в зависимости от статуса задачи - вернуть фоноввый цвет
-  getMobilePriorityBgColor(task: Task) {
+  // в зависимости от статуса задачи - вернуть фоновый цвет
+  getPriorityBgColor(task: Task) {
     if (task.priority != null && !task.completed) {
       return task.priority.color;
     }
     return 'none';
+  }
+
+  // в это событие попадает как переход на другую страницу (pageIndex), так и изменение кол-ва данных на страниц (pageSize)
+  pageChanged(pageEvent: PageEvent) {
+    this.paging.emit(pageEvent);
   }
 }

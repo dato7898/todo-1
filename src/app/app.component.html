@@ -75,7 +75,10 @@
             <div class="col-12">
               <app-tasks
                          [tasks]="tasks"
-                         [selectedCategory]="selectedCategory"
+                         [totalTasksFounded]="totalTasksFounded"
+                         [taskTo]="taskTo"
+
+                         (paging)="paging($event)"
               ></app-tasks>
             </div>
           </div>

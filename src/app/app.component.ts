@@ -6,6 +6,9 @@ import {CategoryService} from './data/dao/impl/CategoryService';
 import {CategoryTo, TaskTo} from './data/dao/to/ObjectsTo';
 import {Task} from './model/Task';
 import {TaskService} from './data/dao/impl/TaskService';
+import {PageEvent} from '@angular/material/paginator';
+import {MatDialog} from '@angular/material/dialog';
+import {Observable} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -44,6 +47,7 @@ export class AppComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private taskService: TaskService,
+    private dialog: MatDialog, // работа с диалог. окнами
     private introService: IntroService,
     private deviceService: DeviceDetectorService // для определения типа устройства (моб., десктоп, планшет)
   ) {
@@ -51,24 +55,26 @@ export class AppComponent implements OnInit {
     this.isMobile = deviceService.isMobile();
     this.isTablet = deviceService.isTablet();
 
-    this.showStat = !this.isMobile; // если моб. устройство, то по-умолчанию не показывать статистику
-
-    this.setMenuValues(); // установить настройки меню
+    this.setMenuDisplayParams(); // параметры отображения меню (зависит от устройства пользователя)
   }
 
   ngOnInit(): void {
-    // this.dataHandler.getAllCategories().subscribe(categories => this.categories = categories);
-    // this.dataHandler.getAllPriorities().subscribe(priorities => this.priorities = priorities);
-
-    // заполнить меню с категориями
-    this.fillAllCategories();
-    this.selectCategory(null);
-
     // для мобильных и планшетов - не показывать интро
     if (!this.isMobile && !this.isTablet) {
-      // пробуем показать приветственные справочные материалы
-      this.introService.startIntroJS(true);
+
     }
+    // заполнить категории
+    this.fillAllCategories().subscribe(res => {
+      this.categories = res;
+      // первоначальное отображение задач при загрузке приложения
+      // запускаем толко после выполнения статистики (т.к. понадобятся ее данные) и загруженных категорий
+      this.selectCategory(this.selectedCategory);
+    });
+  }
+
+  // заполняет массив категорий
+  fillAllCategories(): Observable<Category[]> {
+    return this.categoryService.findAll();
   }
 
   addCategory(category: Category) {
@@ -81,20 +87,16 @@ export class AppComponent implements OnInit {
 
   deleteCategory(category: Category) {
     this.categoryService.delete(category.id).subscribe(cat => {
-      this.searchCategory(this.categoryTo); // обновляем список категорий
+      this.selectedCategory = null; // выбираем категорию "Все"
+      this.searchCategory(this.categoryTo);
+      this.selectCategory(this.selectedCategory);
     });
   }
 
   updateCategory(category: Category) {
     this.categoryService.update(category).subscribe(() => {
       this.searchCategory(this.categoryTo); // обновляем список категорий
-    });
-  }
-
-  // заполняет категории и кол-во невыполненных задач по каждой из них (нужно для отображения категорий)
-  fillAllCategories() {
-    this.categoryService.findAll().subscribe(result => {
-      this.categories = result;
+      this.searchTasks(this.taskTo); // обновляем список задач
     });
   }
 
@@ -122,8 +124,8 @@ export class AppComponent implements OnInit {
   searchTasks(taskTo: TaskTo) {
     this.taskTo = taskTo;
     this.taskService.findTasks(this.taskTo).subscribe(result => {
+      this.totalTasksFounded = result.totalElements;
       this.tasks = result.content; // сколько данных показывать на странице
-      console.log(result);
     });
   }
 
@@ -148,7 +150,7 @@ export class AppComponent implements OnInit {
   }
 
   // параметры меню
-  setMenuValues() {
+  setMenuDisplayParams() {
     this.menuPosition = 'left'; // меню слева
 
     // настройки бокового меню для моб. и десктоп вариантов
@@ -168,4 +170,20 @@ export class AppComponent implements OnInit {
   toggleMenu() {
     this.menuOpened = !this.menuOpened;
   }
+
+  // изменили кол-во элементов на странице или перешли на другую страницу
+  // с помощью paginator
+  paging(pageEvent: PageEvent) {
+    // если изменили настройку "кол-во на странице" - заново делаем запрос и показываем с 1й страницы
+    if (this.taskTo.pageSize !== pageEvent.pageSize) {
+      this.taskTo.pageNumber = 0; // новые данные будем показывать с 1-й страницы (индекс 0)
+    } else {
+      // если просто перешли на другую страницу
+      this.taskTo.pageNumber = pageEvent.pageIndex;
+    }
+
+    this.taskTo.pageSize = pageEvent.pageSize;
+    this.searchTasks(this.taskTo); // показываем новые данные
+  }
+
 }

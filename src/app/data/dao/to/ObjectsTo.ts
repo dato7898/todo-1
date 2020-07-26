@@ -9,7 +9,7 @@ export class TaskTo {
   categoryId: number = null;
 
   pageNumber = 0;
-  pageSize = 5;
+  pageSize = 10;
 
   sortColumn = 'title';
   sortDirection = 'asc';

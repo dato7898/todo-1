@@ -7,14 +7,15 @@
 
     <mat-label>Название (обязательно)</mat-label>
     <input
+      [disabled]="task.completed != null && task.completed !== 0"
       #inputTitle
       (keydown.enter)="onConfirm()"
-      [(ngModel)]="tmpTitle"
+      [(ngModel)]="newTitle"
       matInput> <!-- по нажатию на enter можем сразу сохранить задачу -->
     <button
-      (click)="tmpTitle= ''"
-      *ngIf="tmpTitle.trim().length > 0" aria-label="Clear" class="size25" mat-button
-      mat-icon-button matSuffix>
+      (click)="newTitle= ''"
+      *ngIf="newTitle && newTitle.trim().length > 0" aria-label="Clear" class="dialog-toto-title" 
+      mat-button mat-icon-button matSuffix>
       <mat-icon>clear</mat-icon>
     </button>
 
@@ -24,9 +25,11 @@
   <mat-form-field>
     <mat-label>Укажите категорию</mat-label>
 
-    <mat-select [(ngModel)]="tmpCategory">
+    <mat-select 
+        [(ngModel)]="newCategoryId"
+        [disabled]="task.completed != null && task.completed !== 0">
       <mat-option [value]="null">Без категории</mat-option>
-      <mat-option *ngFor="let category of categories" [value]="category">
+      <mat-option *ngFor="let category of categories" [value]="category.id">
         {{category.title}}
       </mat-option>
     </mat-select>
@@ -37,9 +40,11 @@
   <mat-form-field>
     <mat-label>Укажите приоритет</mat-label>
 
-    <mat-select [(ngModel)]="tmpPriority">
+    <mat-select 
+        [(ngModel)]="newPriorityId"
+        [disabled]="task.completed != null && task.completed !== 0">
       <mat-option [value]="null">Без приоритета</mat-option>
-      <mat-option *ngFor="let priority of priorities" [value]="priority">
+      <mat-option *ngFor="let priority of priorities" [value]="priority.id">
         {{priority.title}}
       </mat-option>
     </mat-select>
@@ -49,11 +54,12 @@
   <!-- календарь - срок выполнения -->
   <mat-form-field>
 
-    <input matInput
-           placeholder="Укажите срок выполнения"
+    <input 
+           [disabled]="task.completed != null && task.completed !== 0"
+           matInput placeholder="Укажите срок выполнения"
            #inputDate readonly="true"
            [matDatepicker]="picker"
-           [(ngModel)]="tmpDate"
+           [(ngModel)]="newDate"
            (click)="picker.open()">
 
     <!-- иконка календаря для открытия календаря -->
@@ -63,20 +69,47 @@
     <mat-datepicker #picker></mat-datepicker>
 
     <!-- кнопка очистки даты -->
-    <button *ngIf="inputDate.value.trim().length > 0"
+    <button [disabled]="task.completed != null && task.completed !== 0" 
+            *ngIf="inputDate.value.trim().length > 0"
             mat-button matSuffix mat-icon-button aria-label="Clear"
-            (click)="tmpDate = null" class="size25">
+            (click)="newDate = null" class="calendar-clear-icon">
       <mat-icon>clear</mat-icon>
     </button>
 
   </mat-form-field>
+
+  <div class="row">
+    <div class="col-12">
+      <!-- если задача завершена - контролы не будут доступны -->
+      <span class="ready-date" [ngClass]="{'disabled': task.completed}"
+            (click)="!task.completed && setToday()">
+        Сегодня
+      </span>
+
+      <span class="ready-date" [ngClass]="{'disabled': task.completed}"
+            (click)="!task.completed && addDays(1)">
+        Завтра
+      </span>
+
+      <span class="ready-date" [ngClass]="{'disabled': task.completed}"
+            (click)="!task.completed && addDays(2)">
+        Послезавтра
+      </span>
+
+      <span class="ready-date" [ngClass]="{'disabled': task.completed}"
+            (click)="!task.completed && addDays(7)">
+        Через неделю
+      </span>
+    </div>
+  </div>
+  <div class="gap20"></div>
 
 </mat-dialog-content>
 
 <!--  кнопки возможных действий-->
 <mat-dialog-actions>
 
-  <div class="col-md-5 col-12">
+  <div class="col-md-5 col-12" [ngClass]="{'text-center': isMobile, 'text-left': !isMobile}">
     <button
       (click)="onConfirm()"
       color="primary" mat-raised-button
@@ -86,21 +119,23 @@
     <button (click)="onCancel()" mat-raised-button>Отмена</button>
   </div>
 
-  <div class="col-md-7 col-12 text-right">
+  <div class="col-md-7 col-12 text-right"
+        *ngIf="canComplete || canDelete"
+        [ngClass]="{'text-center': isMobile, 'text-right': !isMobile}">
     <button
       mat-button class="green"
-      *ngIf="canActivateDeactivate() && task.completed"
-      (click)="activate()">
-      Активировать
-    </button>
-    <button
-      mat-button class="green"
-      *ngIf="canActivateDeactivate() && !task.completed"
+      *ngIf="canComplete && task && !task.completed"
       (click)="complete()">
       Завершить задачу
     </button>
     <button
-      *ngIf="canDelete()"
+      mat-button class="green"
+      *ngIf="canComplete && task && task.completed"
+      (click)="activate()">
+      Активировать
+    </button>
+    <button
+      *ngIf="canDelete"
       mat-button
       class="red"
       (click)="delete()">

@@ -11,6 +11,7 @@ import {Priority} from '../../model/Priority';
 import {OperType} from 'src/app/dialog/OperType';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {TaskTo} from '../../data/dao/to/ObjectsTo';
+import {DialogAction} from '../../object/DialogResult';
 
 @Component({
   selector: 'app-tasks',
@@ -41,6 +42,7 @@ export class TasksComponent implements OnInit {
   }
 
   @Input() selectedCategory: Category;
+  @Input() categories: Category[];
   @Input() priorities: Priority[]; // список приоритетов (для фильтрации задач, для выпадающих списков)
   @Input() showSearch: boolean; // показать/скрыть инструменты поиска
 
@@ -98,22 +100,86 @@ export class TasksComponent implements OnInit {
 
   // диалоговое окно для добавления задачи
   openAddDialog() {
+    const task = new Task(null, '', 0, null, this.selectedCategory);
 
+    const dialogRef = this.dialog.open(EditTaskDialogComponent, {
+      // передаем новый пустой объект  для заполнения
+      // также передаем справочные даныне (категории, приоритеты)
+      data: [task, 'Добавление задачи', this.categories, this.priorities]
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (!(result)) { // если просто закрыли окно, ничего не нажав
+        return;
+      }
+      if (result.action === DialogAction.SAVE) { // если нажали ОК
+        this.addTask.emit(task);
+      }
+    });
   }
 
   // диалоговое редактирования для добавления задачи
   openEditDialog(task: Task): void {
+    const dialogRef = this.dialog.open(EditTaskDialogComponent, {
+      data: [task, 'Редактирование задачи', this.categories, this.priorities],
+      autoFocus: false
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) { // если просто закрыли окно, ничего не нажав
+        return;
+      }
+
+      if (result.action === DialogAction.DELETE) {
+        this.deleteTask.emit(task);
+        return;
+      }
+
+      if (result.action === DialogAction.COMPLETE) {
+        task.completed = 1; // ставим статус задачи как выполненная
+        this.updateTask.emit(task);
+      }
+
+      if (result.action === DialogAction.ACTIVATE) {
+        task.completed = 0; // возвращаем статус задачи как невыполненная
+        this.updateTask.emit(task);
+        return;
+      }
+
+      if (result.action === DialogAction.SAVE) { // если нажали ОК и есть результат
+        this.updateTask.emit(task);
+        return;
+      }
+    });
   }
 
   // диалоговое окно подтверждения удаления
   openDeleteDialog(task: Task) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      maxWidth: '500px',
+      data: {dialogTitle: 'Подтвердите действие', message: `Вы действительно хотите удалить задачу: "${task.title}"?`},
+      autoFocus: false
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (!(result)) { // если просто закрыли окно, ничего не нажав
+        return;
+      }
+
+      if (result.action === DialogAction.OK) { // если нажали ОК
+        this.deleteTask.emit(task);
+      }
+    });
   }
 
   // нажали/отжали выполнение задачи
   onToggleCompleted(task: Task) {
-
+    if (task.completed === 0) {
+      task.completed = 1;
+    } else {
+      task.completed = 0;
+    }
+    this.updateTask.emit(task);
   }
 
   // в зависимости от статуса задачи - вернуть цвет названия

@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {IntroService} from '../../service/intro.service';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {DialogAction} from '../../object/DialogResult';
+import {Priority} from '../../model/Priority';
 
 @Component({
   selector: 'app-header',
@@ -23,7 +24,7 @@ export class HeaderComponent implements OnInit {
   @Output()
   toggleMenu = new EventEmitter(); // показать/скрыть статистику
 
-  @Output() settingsChanged = new EventEmitter<boolean>();
+  @Output() settingsChanged = new EventEmitter<Priority[]>();
 
   isMobile: boolean;
 
@@ -46,7 +47,7 @@ export class HeaderComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result && result.action === DialogAction.SETTINGS_CHANGE) {
-        this.settingsChanged.emit(true);
+        this.settingsChanged.emit(result.obj);
         return;
       }
     });

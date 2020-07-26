@@ -2,7 +2,7 @@
 
   <div class="row align-self-baseline">
     <div class="col-7 ">
-      <a class="pointer" (click)="onUpdatePriority(priority)">
+      <a class="pointer" (click)="openEditDialog(priority)">
         {{priority.title}}
       </a>
     </div>
@@ -14,13 +14,13 @@
     </div>
 
     <div class="col-1 text-left">
-      <p class="pointer gray" (click)="onDeletePriority(priority)">
+      <p class="pointer gray" (click)="openDeleteDialog(priority)">
         <mat-icon>delete</mat-icon>
       </p>
     </div>
 
     <div class="col-1 text-left">
-      <p class="pointer gray" (click)="onUpdatePriority(priority)">
+      <p class="pointer gray" (click)="openEditDialog(priority)">
         <mat-icon>edit</mat-icon>
       </p>
     </div>
@@ -28,7 +28,7 @@
 
 </div>
 
-<p class="link little" (click)="onAddPriority()">
+<p class="link little" (click)="openAddDialog()">
   Добавить приоритет
 </p>
 

@@ -8,18 +8,20 @@
     <mat-label>Название (20 символов)</mat-label>
     <input
       #inputTitle
-      (keydown.enter)="onConfirm()"
-      [(ngModel)]="priorityTitle"
+      (keydown.enter)="confirm()"
+      [(ngModel)]="priority.title"
       matInput maxlength="20"> <!-- по нажатию на enter можем сразу сохранить приоритет -->
     <button
-      (click)="priorityTitle= ''"
-      *ngIf="priorityTitle.trim().length > 0" aria-label="Clear"
-      class="size25" mat-button
+      (click)="priority.title= ''"
+      *ngIf="priority && priority.title.trim().length > 0" aria-label="Clear"
+      class="clear-icon" mat-button
       mat-icon-button matSuffix>
       <mat-icon>clear</mat-icon>
     </button>
 
   </mat-form-field>
+
+  <span [(colorPicker)]="priority.color" [style.background]="priority.color" class="color-circle"></span>
 
 </mat-dialog-content>
 
@@ -28,17 +30,17 @@
 
   <div class="col-12 text-center">
     <button
-      (click)="onConfirm()"
+      (click)="confirm()"
       color="primary" mat-raised-button
       [disabled]="inputTitle.value.trim().length==0">  <!-- если пустой текст - кнопка "Сохранить" будет недоступна -->
       Сохранить
     </button>
-    <button (click)="onCancel()" mat-raised-button>Отмена</button>
+    <button (click)="cancel()" mat-raised-button>Отмена</button>
   </div>
 
   <div class="col-12 text-center">
     <button
-      *ngIf="canDelete()"
+      *ngIf="canDelete"
       mat-button class="red"
       (click)="delete()">
       Удалить приоритет

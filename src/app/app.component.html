@@ -47,6 +47,7 @@
           <app-header
             (toggleMenu)="toggleMenu()"
             (toggleStat)="toggleStat($event)"
+            (settingsChanged)="settingsChanged($event)"
 
             [categoryName]="selectedCategory ? selectedCategory.title: 'Все'"
             [showStat]="showStat"

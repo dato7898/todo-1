@@ -8,7 +8,6 @@ import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../dialog/confirm-dialog/confirm-dialog.component';
 import {Category} from 'src/app/model/Category';
 import {Priority} from '../../model/Priority';
-import {OperType} from 'src/app/dialog/OperType';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {TaskTo} from '../../data/dao/to/ObjectsTo';
 import {DialogAction} from '../../object/DialogResult';

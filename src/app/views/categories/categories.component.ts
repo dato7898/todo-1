@@ -105,7 +105,12 @@ export class CategoriesComponent implements OnInit {
   }
 
   showCategory(category: Category) {
-
+    // если не изменилось значение, ничего не делать (чтобы лишний раз не делать запрос данных)
+    if (this.selectedCategory === category) {
+      return;
+    }
+    this.selectedCategory = category; // сохраняем выбранную категорию
+    this.selectCategory.emit(this.selectedCategory); // вызываем внешний обработчик
   }
 
   // сохраняет индекс записи категории, над который в данный момент проходит мышка (и там отображается иконка редактирования)

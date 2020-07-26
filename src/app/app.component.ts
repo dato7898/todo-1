@@ -1,13 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {Task} from './model/Task';
 import {Category} from './model/Category';
-import {Priority} from './model/Priority';
-import {zip} from 'rxjs';
-import {concatMap, map} from 'rxjs/operators';
 import {IntroService} from './service/intro.service';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import { CategoryService } from './data/dao/impl/CategoryService';
-import { CategoryTo } from './data/dao/to/ObjectsTo';
+import {CategoryService} from './data/dao/impl/CategoryService';
+import {CategoryTo, TaskTo} from './data/dao/to/ObjectsTo';
+import {Task} from './model/Task';
+import {TaskService} from './data/dao/impl/TaskService';
 
 @Component({
   selector: 'app-root',
@@ -18,13 +16,17 @@ export class AppComponent implements OnInit {
 
   title = 'Todo';
   categories: Category[];
+  tasks: Task[]; // текущие задачи для отображения на странице
   selectedCategory: Category = null;
 
   // статистика
   uncompletedCountForCategoryAll: number;
 
+  totalTasksFounded: number; // сколько всего задач найдено
+
   // параметры поисков
   categoryTo = new CategoryTo(); // экземпляр можно создать тут же, т.к. не загружаем из cookies
+  taskTo = new TaskTo();
 
   // показать/скрыть статистику
   showStat = true;
@@ -40,9 +42,10 @@ export class AppComponent implements OnInit {
   isTablet: boolean;
 
   constructor(
-      private categoryService: CategoryService,
-      private introService: IntroService,
-      private deviceService: DeviceDetectorService // для определения типа устройства (моб., десктоп, планшет)
+    private categoryService: CategoryService,
+    private taskService: TaskService,
+    private introService: IntroService,
+    private deviceService: DeviceDetectorService // для определения типа устройства (моб., десктоп, планшет)
   ) {
     // определяем тип запроса
     this.isMobile = deviceService.isMobile();
@@ -103,6 +106,39 @@ export class AppComponent implements OnInit {
   }
 
   selectCategory(category: Category) {
+    // сбрасываем, чтобы показывать результат с первой страницы
+    this.taskTo.pageNumber = 0;
+    this.selectedCategory = category; // запоминаем выбранную категорию
+    // для поиска задач по данной категории
+    this.taskTo.categoryId = category ? category.id : null;
+    // обновить список задач согласно выбранной категории и другим параметрам поиска из taskSearchValues
+    this.searchTasks(this.taskTo);
+    if (this.isMobile) {
+      this.menuOpened = false; // для мобильных - автоматически закрываем боковое меню
+    }
+  }
+
+  // поиск задач
+  searchTasks(taskTo: TaskTo) {
+    this.taskTo = taskTo;
+    this.taskService.findTasks(this.taskTo).subscribe(result => {
+      this.tasks = result.content; // сколько данных показывать на странице
+      console.log(result);
+    });
+  }
+
+  // добавление задачи
+  addTask(task: Task) {
+
+  }
+
+  // удаление задачи
+  deleteTask(task: Task) {
+
+  }
+
+  // обновление задачи
+  updateTask(task: Task) {
 
   }
 

@@ -43,7 +43,8 @@
 
       <!-- виртуальная категория 'Все' -->
       <li class="nav-item category"
-          [class.active]="selectedCategory === null">
+          [class.active]="selectedCategory === null"
+          (click)="showCategory(null)">
         <a class="nav-link">
           <!-- название категории -->
           <span class="all-category-title">Все</span>

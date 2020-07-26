@@ -116,7 +116,7 @@ export class TasksComponent implements OnInit {
   }
 
   // диалоговое окно для редактирования и добавления задачи
-  openEditTaskDialog(task: Task) {
+  openEditDialog(task: Task) {
     // открытие диалогового окна
     const dialogRef = this.dialog.open(EditTaskDialogComponent, {
       data: [task, 'Редактирование задачи', OperType.EDIT],

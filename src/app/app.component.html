@@ -19,7 +19,8 @@
          data-intro="Фильтрация задач, добавление/удаление/редактирование категорий"
          data-position='right'>
 
-      <app-categories (selectCategory)="selectCategory($event)"
+      <app-categories 
+                      (selectCategory)="selectCategory($event)"
                       (updateCategory)="updateCategory($event)"
                       (deleteCategory)="deleteCategory($event)"
                       (searchCategory)="searchCategory($event)"
@@ -39,64 +40,48 @@
   <!--  ng-sidebar-content - над чем будет открываться слайд-меню-->
   <div ng-sidebar-content>
 
-    <div class="main-panel">
-      <div class="navbar-wrapper">
+      <div class="main-panel wrapper">
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
 
-<!--          <app-header-->
-<!--            (toggleMenu)="toggleMenu()"-->
-<!--            [categoryName]="selectedCategory ? selectedCategory.title: 'Все'"-->
-<!--            (toggleStat)="toggleStat($event)"-->
-<!--            [showStat]="showStat"-->
-<!--          ></app-header>-->
+          <app-header
+            (toggleMenu)="toggleMenu()"
+            (toggleStat)="toggleStat($event)"
+
+            [categoryName]="selectedCategory ? selectedCategory.title: 'Все'"
+            [showStat]="showStat"
+          ></app-header>
 
         </nav>
-      </div>
-      <!-- End Navbar -->
-      <div class="content">
-        <div class="container-fluid">
+        <!-- End Navbar -->
+        <div class="content">
+          <div class="container-fluid">
+            <app-stat
+                      [dash]="dash"
+                      [showStat]="showStat"
+            ></app-stat>
+            <app-tasks
+                       [showSearch]="showSearch"
+                       [tasks]="tasks"
+                       [totalTasksFounded]="totalTasksFounded"
+                       [taskTo]="taskTo"
+                       [priorities]="priorities"
+                       [categories]="categories"
+                       [selectedCategory]="selectedCategory"
 
-          <div data-step="2"
-               data-intro="Список всех задач cо статистикой"
-               data-position='top'>
+                       (searchAction)="searchTasks($event)"
+                       (toggleSearch)="toggleSearch($event)"
+                       (selectCategory)="selectCategory($event)"
+                       (paging)="paging($event)"
 
-            <!-- Статистика -->
-<!--            <app-stat-->
-<!--              [totalTasksInCategory]="totalTasksCountInCategory"-->
-<!--              [completeTasksInCategory]="completedCountInCategory"-->
-<!--              [uncompleteTasksInCategory]="uncompletedCountInCategory"-->
-<!--              [showStat]="showStat"-->
-<!--            ></app-stat>-->
-
-          </div>
-
-          <div class="row">
-            <div class="col-12">
-              <app-tasks
-                         [showSearch]="showSearch"
-                         [tasks]="tasks"
-                         [totalTasksFounded]="totalTasksFounded"
-                         [taskTo]="taskTo"
-                         [priorities]="priorities"
-                         [categories]="categories"
-                         [selectedCategory]="selectedCategory"
-
-                         (searchAction)="searchTasks($event)"
-                         (toggleSearch)="toggleSearch($event)"
-                         (selectCategory)="selectCategory($event)"
-                         (paging)="paging($event)"
-
-                         (addTask)="addTask($event)"
-                         (deleteTask)="deleteTask($event)"
-                         (updateTask)="updateTask($event)"
-              ></app-tasks>
-            </div>
+                       (addTask)="addTask($event)"
+                       (deleteTask)="deleteTask($event)"
+                       (updateTask)="updateTask($event)"
+            ></app-tasks>
           </div>
         </div>
-      </div>
 
-      <app-footer></app-footer>
+      <app-footer *ngIf="!isMobile"></app-footer>
 
     </div>
 

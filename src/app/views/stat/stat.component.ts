@@ -1,4 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
+import {DashboardData} from '../../object/DashboardData';
 
 @Component({
   selector: 'app-stat',
@@ -6,21 +7,44 @@ import {Component, OnInit, Input} from '@angular/core';
   styleUrls: ['./stat.component.css']
 })
 export class StatComponent implements OnInit {
-  @Input()
-  totalTasksInCategory: number; // общее кол-во задач в категории
 
-  @Input()
-  completeTasksInCategory: number; // кол-во решенных задач в категории
-
-  @Input()
-  uncompleteTasksInCategory: number; // кол-во нерешенных задач в категории
-
-  @Input() showStat: boolean;
+  @Input() dash: DashboardData; // данные дэшбоарда
+  @Input() showStat: boolean; // показать или скрыть статистику
 
   constructor() {
   }
 
   ngOnInit(): void {
+  }
+
+  getTotal(): number {
+    if (this.dash) {
+      return this.dash.completedTotal + this.dash.uncompletedTotal
+    }
+  }
+
+  getCompletedCount() {
+    if (this.dash) {
+      return this.dash.completedTotal;
+    }
+  }
+
+  getUncompletedCount() {
+    if (this.dash) {
+      return this.dash.uncompletedTotal;
+    }
+  }
+
+  getCompletedPercent() {
+    if (this.dash) {
+      return this.dash.completedTotal ? (this.dash.completedTotal / this.getTotal()) : 0;
+    }
+  }
+
+  getUncompletedPercent() {
+    if (this.dash) {
+      return this.dash.uncompletedTotal ? (this.dash.uncompletedTotal / this.getTotal()) : 0;
+    }
   }
 
 }

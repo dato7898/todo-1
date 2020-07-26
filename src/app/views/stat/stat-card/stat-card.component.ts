@@ -16,7 +16,7 @@ export class StatCardComponent implements OnInit {
   count1: any; // можно передавать любой тип для отображения (число, текст и пр.)
 
   @Input()
-  countTotal: any;
+  count2: any;
 
   @Input()
   title: string;

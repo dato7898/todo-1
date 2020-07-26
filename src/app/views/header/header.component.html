@@ -6,10 +6,9 @@
         <mat-icon>menu</mat-icon>
       </button>
 
-      <p class="navbar-brand">{{categoryName}}</p>
-
       <p class="link navbar-brand" (click)="onToggleStat()" *ngIf="showStat && !isMobile">Скрыть статистику</p>
       <p class="link navbar-brand" (click)="onToggleStat()" *ngIf="!showStat && !isMobile">Показать статистику </p>
+      <p class="navbar-brand"><span *ngIf="!isMobile">Категория:</span> "{{categoryName}}"</p>
     </div>
 
     <!--  помощь, настройки-->

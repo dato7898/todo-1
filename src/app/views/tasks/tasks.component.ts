@@ -23,27 +23,56 @@ export class TasksComponent implements OnInit {
   dataSource = new MatTableDataSource<Task>(); // контейнер - источник данных для таблицы
 
   @Input() totalTasksFounded: number; // сколько всего задач найдено
-  @Input() taskTo: TaskTo;
-  tasks: Task[];
 
+  taskTo: TaskTo;
+  // все возможные параметры для поиска задач
+  @Input('taskTo')
+  set setTaskSearchValues(taskTo: TaskTo) {
+      this.taskTo = taskTo;
+      this.initSearchValues(); // записать в локальные переменные
+      this.initSortDirectionIcon(); // показать правильную иконку (убывание, возрастание)
+  }
+
+  tasks: Task[];
   @Input('tasks')
   set setTasks(tasks: Task[]) {
     this.tasks = tasks;
     this.assignTableSource();   // передать данные таблице для отображения задач
   }
 
+  @Input() selectedCategory: Category;
+  @Input() priorities: Priority[]; // список приоритетов (для фильтрации задач, для выпадающих списков)
+  @Input() showSearch: boolean; // показать/скрыть инструменты поиска
+
   @Output() deleteTask = new EventEmitter<Task>();
   @Output() updateTask = new EventEmitter<Task>();
   @Output() addTask = new EventEmitter<Task>();
   @Output() selectCategory = new EventEmitter<Category>();
-  @Output()
-  paging = new EventEmitter<PageEvent>(); // переход по страницам данных
-  @Output()
-  searchAction = new EventEmitter<TaskTo>(); // переход по страницам данных
+  @Output() paging = new EventEmitter<PageEvent>(); // переход по страницам данных
+  @Output() searchAction = new EventEmitter<TaskTo>(); // переход по страницам данных
+  @Output() toggleSearch = new EventEmitter<boolean>(); // показать/скрыть поиск
+
+  sortIconName: string; // иконка сортировки (убывание, возрастание)
+
+  // названия иконок из коллекции
+  readonly iconNameDown = 'arrow_downward';
+  readonly iconNameUp = 'arrow_upward';
 
   // цвета
   readonly colorCompletedTask = '#F8F9FA';
   readonly colorWhite = '#fff';
+
+  changed = false;
+
+  readonly defaultSortColumn = 'title';
+  readonly defaultSortDirection = 'asc';
+
+  // значения для поиска (локальные переменные)
+  filterTitle: string;
+  filterCompleted: number;
+  filterPriorityId: number;
+  filterSortColumn: string;
+  filterSortDirection: string;
 
   isMobile: boolean;
 
@@ -64,7 +93,6 @@ export class TasksComponent implements OnInit {
     if (!this.dataSource) {
       return;
     }
-    console.log(this.tasks);
     this.dataSource.data = this.tasks; // обновить источник данных (т.к. данные массива tasks обновились)
   }
 
@@ -112,5 +140,92 @@ export class TasksComponent implements OnInit {
   // в это событие попадает как переход на другую страницу (pageIndex), так и изменение кол-ва данных на страниц (pageSize)
   pageChanged(pageEvent: PageEvent) {
     this.paging.emit(pageEvent);
+  }
+
+  // параметры поиска
+  initSearch() {
+    // сохраняем значения перед поиском
+    this.taskTo.text = this.filterTitle;
+    this.taskTo.completed = this.filterCompleted;
+    this.taskTo.priorityId = this.filterPriorityId;
+    this.taskTo.sortColumn = this.filterSortColumn;
+    this.taskTo.sortDirection = this.filterSortDirection;
+
+    this.searchAction.emit(this.taskTo);
+    this.changed = false; // сбрасываем флаг изменения
+  }
+
+  // проверяет, были ли изменены какие-либо параметры поиска (по сравнению со старым значением)
+  checkFilterChanged() {
+    this.changed = false;
+
+    // поочередно проверяем все фильтры (текущее введенное значение с последним сохраненным)
+    if (this.taskTo.text !== this.filterTitle) {
+      this.changed = true;
+    }
+
+    if (this.taskTo.completed !== this.filterCompleted) {
+      this.changed = true;
+    }
+
+    if (this.taskTo.priorityId !== this.filterPriorityId) {
+      this.changed = true;
+    }
+
+    if (this.taskTo.sortColumn !== this.filterSortColumn) {
+      this.changed = true;
+    }
+
+    if (this.taskTo.sortDirection !== this.filterSortDirection) {
+      this.changed = true;
+    }
+    return this.changed;
+  }
+
+  // выбрать правильную иконку (убывание, возрастание)
+  initSortDirectionIcon() {
+    if (this.filterSortDirection === 'desc') {
+      this.sortIconName = this.iconNameDown;
+    } else {
+      this.sortIconName = this.iconNameUp;
+    }
+  }
+
+  // изменили направление сортировки
+  changedSortDirection() {
+    if (this.filterSortDirection === 'asc') {
+      this.filterSortDirection = 'desc';
+    } else {
+      this.filterSortDirection = 'asc';
+    }
+    this.initSortDirectionIcon(); // применяем правильную иконку
+  }
+
+  // проинициализировать локальные переменные поиска
+  initSearchValues() {
+    if (!this.taskTo) {
+      return;
+    }
+    this.filterTitle = this.taskTo.text;
+    this.filterCompleted = this.taskTo.completed;
+    this.filterPriorityId = this.taskTo.priorityId;
+    this.filterSortColumn = this.taskTo.sortColumn;
+    this.filterSortDirection = this.taskTo.sortDirection;
+  }
+
+  // сбросить локальные переменные поиска
+  clearSearchValues() {
+    this.filterTitle = '';
+    this.filterCompleted = null;
+    this.filterPriorityId = null;
+    this.filterSortColumn = this.defaultSortColumn;
+    this.filterSortDirection = this.defaultSortDirection;
+
+    this.initSearch();
+  }
+
+  // показать/скрыть инструменты поиска
+  onToggleSearch() {
+    this.toggleSearch.emit(!this.showSearch);
   }
 }

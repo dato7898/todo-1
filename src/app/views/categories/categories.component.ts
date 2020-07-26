@@ -126,7 +126,10 @@ export class CategoriesComponent implements OnInit {
 
   // проверяет, были ли изменены какие-либо параметры поиска (по сравнению со старым значением)
   checkFilterChanged() {
-    this.filterChanged = this.filterTitle !== this.categoryTo.text;
+    this.filterChanged = false;
+    if (this.filterTitle !== this.categoryTo.text){
+      this.filterChanged = true;
+    }
     return this.filterChanged;
   }
 

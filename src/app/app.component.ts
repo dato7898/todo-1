@@ -9,6 +9,8 @@ import {TaskService} from './data/dao/impl/TaskService';
 import {PageEvent} from '@angular/material/paginator';
 import {MatDialog} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
+import {Priority} from './model/Priority';
+import {PriorityService} from './data/dao/impl/PriorityService';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +22,7 @@ export class AppComponent implements OnInit {
   title = 'Todo';
   categories: Category[];
   tasks: Task[]; // текущие задачи для отображения на странице
+  priorities: Priority[]; // приоритеты для отображения и фильтрации
   selectedCategory: Category = null;
 
   // статистика
@@ -31,8 +34,7 @@ export class AppComponent implements OnInit {
   categoryTo = new CategoryTo(); // экземпляр можно создать тут же, т.к. не загружаем из cookies
   taskTo = new TaskTo();
 
-  // показать/скрыть статистику
-  showStat = true;
+  showSearch = true;  // показать/скрыть поиск
 
   // параметры бокового меню с категориями
   menuOpened: boolean; // открыть-закрыть
@@ -47,6 +49,7 @@ export class AppComponent implements OnInit {
   constructor(
     private categoryService: CategoryService,
     private taskService: TaskService,
+    private priorityService: PriorityService,
     private dialog: MatDialog, // работа с диалог. окнами
     private introService: IntroService,
     private deviceService: DeviceDetectorService // для определения типа устройства (моб., десктоп, планшет)
@@ -69,6 +72,14 @@ export class AppComponent implements OnInit {
       // первоначальное отображение задач при загрузке приложения
       // запускаем толко после выполнения статистики (т.к. понадобятся ее данные) и загруженных категорий
       this.selectCategory(this.selectedCategory);
+    });
+
+    this.fillAllPriorities();
+  }
+
+  fillAllPriorities() {
+    this.priorityService.findAll().subscribe(result => {
+      this.priorities = result;
     });
   }
 
@@ -124,8 +135,15 @@ export class AppComponent implements OnInit {
   searchTasks(taskTo: TaskTo) {
     this.taskTo = taskTo;
     this.taskService.findTasks(this.taskTo).subscribe(result => {
-      this.totalTasksFounded = result.totalElements;
-      this.tasks = result.content; // сколько данных показывать на странице
+        // Если выбранная страница для отображения больше, чем всего страниц - заново делаем поиск и показываем 1ю страницу.
+        // Если пользователь был например на 2й странице общего списка и выполнил новый поиск, в результате которого доступна только 1 страница,
+        // то нужно вызвать поиск заново с показом 1й страницы (индекс 0)
+        if (result.totalPages > 0 && this.taskTo.pageNumber >= result.totalPages) {
+            this.taskTo.pageNumber = 0;
+            this.searchTasks(this.taskTo);
+        }
+        this.totalTasksFounded = result.totalElements; // сколько данных показывать на странице
+        this.tasks = result.content; // массив задач
     });
   }
 
@@ -184,6 +202,11 @@ export class AppComponent implements OnInit {
 
     this.taskTo.pageSize = pageEvent.pageSize;
     this.searchTasks(this.taskTo); // показываем новые данные
+  }
+
+  // показать-скрыть поиск
+  toggleSearch(showSearch: boolean) {
+    this.showSearch = showSearch;
   }
 
 }

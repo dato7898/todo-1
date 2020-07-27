@@ -15,6 +15,7 @@ import {StatService} from './data/dao/impl/StatService';
 import {DashboardData} from './object/DashboardData';
 import {Stat} from './model/Stat';
 import {CookieUtils} from './utils/CookieUtils';
+import {SpinnerService} from './service/spinner.service';
 
 @Component({
   selector: 'app-root',
@@ -42,6 +43,8 @@ export class AppComponent implements OnInit {
 
   cookiesUtils = new CookieUtils();
 
+  spinner: SpinnerService;
+
   readonly cookieTaskTo = 'todo:taskTo';
   readonly cookieShowStat = 'todo:showStat';
   readonly cookieShowSearch = 'todo:showSearch';
@@ -67,10 +70,13 @@ export class AppComponent implements OnInit {
     private taskService: TaskService,
     private priorityService: PriorityService,
     private statService: StatService,
+    private spinnerService: SpinnerService, 
     private dialog: MatDialog, // работа с диалог. окнами
     private introService: IntroService,
     private deviceService: DeviceDetectorService // для определения типа устройства (моб., десктоп, планшет)
   ) {
+    this.spinner = spinnerService;
+
     this.statService.getOverallStat().subscribe((result => {     // сначала получаем данные статистики
       this.stat = result;
       this.uncompletedCountForCategoryAll = this.stat.uncompletedTotal;

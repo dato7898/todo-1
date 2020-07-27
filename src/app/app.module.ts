@@ -40,6 +40,8 @@ import { STAT_URL_TOKEN } from './data/dao/impl/StatService';
 import {PRIORITY_URL_TOKEN} from './data/dao/impl/PriorityService';
 import {CATEGORY_URL_TOKEN} from './data/dao/impl/CategoryService';
 import {TASK_URL_TOKEN} from './data/dao/impl/TaskService';
+import {CustomHttpInterceptor} from './interceptor/http-interceptor';
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
 
 registerLocaleData(localeRu);
 
@@ -84,6 +86,11 @@ registerLocaleData(localeRu);
     HttpClientModule
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomHttpInterceptor,
+      multi: true
+    },
     {
       provide: TASK_URL_TOKEN,
       useValue: 'http://localhost:8080/task'

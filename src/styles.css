@@ -305,3 +305,7 @@ app-header {
     cursor: pointer;
 }
 
+.transparent {
+    background: none;
+    border: none;
+}

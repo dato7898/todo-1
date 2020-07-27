@@ -309,6 +309,9 @@
           </div>
         </div>
       </div>
+      <mat-paginator [ngClass]="{'transparent': true}"(page)="pageChanged($event)" [pageIndex]="taskTo.pageNumber"
+                         [pageSize]="taskTo.pageSize" [length]="totalTasksFounded"
+                         [pageSizeOptions]="[10, 20, 50, 100]" showFirstLastButtons></mat-paginator>
     </div>
   </div>
 </div>

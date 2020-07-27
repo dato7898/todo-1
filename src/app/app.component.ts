@@ -13,7 +13,8 @@ import {Priority} from './model/Priority';
 import {PriorityService} from './data/dao/impl/PriorityService';
 import {StatService} from './data/dao/impl/StatService';
 import {DashboardData} from './object/DashboardData';
-import {Stat} from "./model/Stat";
+import {Stat} from './model/Stat';
+import {CookieUtils} from './utils/CookieUtils';
 
 @Component({
   selector: 'app-root',
@@ -28,13 +29,22 @@ export class AppComponent implements OnInit {
   priorities: Priority[]; // приоритеты для отображения и фильтрации
   selectedCategory: Category = null;
 
+  readonly defaultPageSize = 10;
+  readonly defaultPageNumber = 0;
+
   // статистика
   uncompletedCountForCategoryAll: number;
   totalTasksFounded: number; // сколько всего задач найдено
 
   // параметры поисков
   categoryTo = new CategoryTo(); // экземпляр можно создать тут же, т.к. не загружаем из cookies
-  taskTo = new TaskTo();
+  taskTo: TaskTo;
+
+  cookiesUtils = new CookieUtils();
+
+  readonly cookieTaskTo = 'todo:taskTo';
+  readonly cookieShowStat = 'todo:showStat';
+  readonly cookieShowSearch = 'todo:showSearch';
 
   showStat = true;
   showSearch = true;  // показать/скрыть поиск
@@ -68,6 +78,13 @@ export class AppComponent implements OnInit {
       // заполнить категории
       this.fillAllCategories().subscribe(res => {
         this.categories = res;
+        if (!this.initSearchCookie()) {
+          this.taskTo = new TaskTo();
+          this.taskTo.pageSize = this.defaultPageSize;
+          this.taskTo.pageNumber = this.defaultPageNumber;
+        }
+        this.initShowStatCookie();
+        this.initShowSearchCookie();
         // первоначальное отображение задач при загрузке приложения
         // запускаем толко после выполнения статистики (т.к. понадобятся ее данные) и загруженных категорий
         this.selectCategory(this.selectedCategory);
@@ -86,6 +103,24 @@ export class AppComponent implements OnInit {
     // для мобильных и планшетов - не показывать интро
     if (!this.isMobile && !this.isTablet) {
         // this.introService.startIntroJS(true); // при первом запуске приложения - показать интро
+    }
+  }
+
+  initShowStatCookie() {
+    if (!this.isMobile) {
+      const val = this.cookiesUtils.getCookie(this.cookieShowStat);
+      if (val) {
+        this.showStat = val === 'true';
+      }
+    }
+  }
+
+  initShowSearchCookie() {
+    if (!this.isMobile) {
+      const val = this.cookiesUtils.getCookie(this.cookieShowSearch);
+      if (val) {
+        this.showSearch = val === 'true';
+      }
     }
   }
 
@@ -156,22 +191,6 @@ export class AppComponent implements OnInit {
     if (this.isMobile) {
         this.menuOpened = false; // для мобильных - автоматически закрываем боковое меню
     }
-  }
-
-  // поиск задач
-  searchTasks(taskTo: TaskTo) {
-    this.taskTo = taskTo;
-    this.taskService.findTasks(this.taskTo).subscribe(result => {
-        // Если выбранная страница для отображения больше, чем всего страниц - заново делаем поиск и показываем 1ю страницу.
-        // Если пользователь был например на 2й странице общего списка и выполнил новый поиск, в результате которого доступна только 1 страница,
-        // то нужно вызвать поиск заново с показом 1й страницы (индекс 0)
-        if (result.totalPages > 0 && this.taskTo.pageNumber >= result.totalPages) {
-          this.taskTo.pageNumber = 0;
-          this.searchTasks(this.taskTo);
-        }
-        this.totalTasksFounded = result.totalElements; // сколько данных показывать на странице
-        this.tasks = result.content; // массив задач
-    });
   }
 
   // обновить общую статистику и счетчик для категории Все (и показать эти данные в дашборде, если выбрана категория "Все")
@@ -259,8 +278,34 @@ export class AppComponent implements OnInit {
 
   }
 
+  // показать-скрыть поиск
+  toggleSearch(showSearch: boolean) {
+    this.showSearch = showSearch;
+    this.cookiesUtils.setCookie(this.cookieShowSearch, String(showSearch));
+  }
+
   toggleStat(showStat: boolean) {
     this.showStat = showStat;
+    this.cookiesUtils.setCookie(this.cookieShowStat, String(showStat));
+  }
+
+  // поиск задач
+  searchTasks(taskTo: TaskTo) {
+    this.taskTo = taskTo;
+    this.taskService.findTasks(this.taskTo).subscribe(result => {
+        // Если выбранная страница для отображения больше, чем всего страниц - заново делаем поиск и показываем 1ю страницу.
+        // Если пользователь был например на 2й странице общего списка и выполнил новый поиск, в результате которого доступна только 1 страница,
+        // то нужно вызвать поиск заново с показом 1й страницы (индекс 0)
+        if (result.totalPages > 0 && this.taskTo.pageNumber >= result.totalPages) {
+          this.taskTo.pageNumber = 0;
+          this.searchTasks(this.taskTo);
+        }
+
+        this.cookiesUtils.setCookie(this.cookieTaskTo, JSON.stringify(taskTo));
+
+        this.totalTasksFounded = result.totalElements; // сколько данных показывать на странице
+        this.tasks = result.content; // массив задач
+    });
   }
 
   // показать-скрыть меню
@@ -284,14 +329,8 @@ export class AppComponent implements OnInit {
     this.searchTasks(this.taskTo); // показываем новые данные
   }
 
-  // показать-скрыть поиск
-  toggleSearch(showSearch: boolean) {
-    this.showSearch = showSearch;
-  }
-
   // были ли изменены настройки приложения
   settingsChanged(priorities: Priority[]) {
-    // this.fillAllPriorities(); // заново загрузить все категории из БД (чтобы их можно было сразу использовать в задачах)
     this.priorities = priorities; // получаем измененные массив с приоритетами
     this.searchTasks(this.taskTo); // обновить текущие задачи и категории для отображения
   }
@@ -311,6 +350,60 @@ export class AppComponent implements OnInit {
   getCategoryIndexById(id: number): number {
     const tmpCategory = this.categories.find(t => t.id === id);
     return this.categories.indexOf(tmpCategory);
+  }
+
+  initSearchCookie(): boolean {
+    const cookie = this.cookiesUtils.getCookie(this.cookieTaskTo);
+    if (!cookie) {
+      return false;
+    }
+
+    const cookieJSON = JSON.parse(cookie);
+    if (!cookieJSON) {
+      return false;
+    }
+
+    if (!this.taskTo) {
+      this.taskTo = new TaskTo();
+    }
+
+    const tmpPageSize = cookieJSON.pageSize;
+    if (tmpPageSize) {
+      this.taskTo.pageSize = Number(tmpPageSize);
+    }
+
+    const tmpCategoryId = cookieJSON.categoryId;
+    if (tmpCategoryId) {
+      this.taskTo.categoryId = Number(tmpCategoryId);
+      this.selectedCategory = this.getCategoryFromArray(tmpCategoryId);
+    }
+
+    const tmpPrioriryId = cookieJSON.priorityId;
+    if (tmpPrioriryId) {
+      this.taskTo.priorityId = Number(tmpPrioriryId);
+    }
+
+    const tmpText = cookieJSON.text;
+    if (tmpText) {
+      this.taskTo.text = tmpText;
+    }
+
+    const tmpCompleted = cookieJSON.completed;
+    if (tmpCompleted) {
+      this.taskTo.completed = tmpCompleted;
+    }
+
+    const tmpSortColumn = cookieJSON.sortColumn;
+    if (tmpSortColumn) {
+      this.taskTo.sortColumn = tmpSortColumn;
+    }
+
+    const tmpSortDirection = cookieJSON.sortDirection;
+    if (tmpSortDirection) {
+      this.taskTo.sortDirection = tmpSortDirection;
+    }
+
+    return true;
   }
 
 }

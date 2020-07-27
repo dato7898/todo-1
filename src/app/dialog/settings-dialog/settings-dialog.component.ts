@@ -27,7 +27,7 @@ export class SettingsDialogComponent implements OnInit {
   // нажали Закрыть
   close() {
     if (this.settingsChanged) { // если в настройках произошли изменения
-      this.dialogRef.close(new DialogResult(DialogAction.SETTINGS_CHANGE, this.priorities));
+      this.dialogRef.close();
     } else {
       this.dialogRef.close(new DialogResult(DialogAction.CANCEL));
     }

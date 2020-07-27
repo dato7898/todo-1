@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit {
   @Output()
   toggleMenu = new EventEmitter(); // показать/скрыть статистику
 
-  @Output() settingsChanged = new EventEmitter<Priority[]>();
+  @Output() settingsChanged = new EventEmitter();
 
   isMobile: boolean;
 
@@ -46,10 +46,10 @@ export class HeaderComponent implements OnInit {
       width: '500px'
     });
     dialogRef.afterClosed().subscribe(result => {
-      if (result && result.action === DialogAction.SETTINGS_CHANGE) {
-        this.settingsChanged.emit(result.obj);
+      if (result && result.action === DialogAction.CANCEL) {
         return;
       }
+      this.settingsChanged.emit();
     });
   }
 

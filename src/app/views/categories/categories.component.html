@@ -64,8 +64,8 @@
             <li
                     *ngFor="let category of categories, let index = index"
                     [class.active]="(selectedCategory && category) && category.id === selectedCategory.id"
-                    (mouseleave)="showEditIcon(false, index)"
-                    (mouseenter)="showEditIcon(true, index)"
+                    (mouseleave)="showEditIcon(null)"
+                    (mouseenter)="showEditIcon(index)"
                     (click)="showCategory(category)"
                     class="nav-item category"
             >
@@ -75,7 +75,7 @@
                     <!--         кнопка редактирования категории-->
                     <span class="edit-category-icon-area">
                       <mat-icon
-                              *ngIf="(showEditIcon && index == indexMouseMove) || isMobile"
+                              *ngIf="(index == indexMouseMove) || isMobile"
                               (click)="$event.stopPropagation(); openEditDialog(category)"
                               class="edit-category-icon"
                       >edit

@@ -4,6 +4,9 @@
         <span class="link " (click)="onToggleSearch()" *ngIf="showSearch">Скрыть поиск</span>
         <span class="link " (click)="onToggleSearch()" *ngIf="!showSearch">Показать поиск </span>
     </div>
+    <button class="full-width" *ngIf="isMobile"
+            mat-raised-button color="primary" (click)="openAddDialog()">Добавить задачу
+    </button>
 </div>
 
 <div class="row" *ngIf="showSearch"> <!--если инструменты поиска должны отображаться-->
@@ -117,20 +120,18 @@
 <div class="gap10">&nbsp;</div>
 
 <div class="row ">
-    <div class="col-md-2 col-sm-12">
-        <button
-                [ngClass]="{'full-width': true}"
-                mat-raised-button color="primary" (click)="openAddDialog()">Добавить задачу
-        </button>
-    </div>
-
-    <div class="col-md-2 col-sm-12 text-left align-middle align-self-center" *ngIf="!isMobile">
-        <span class="link " (click)="onToggleSearch()" *ngIf="showSearch">Скрыть поиск</span>
-        <span class="link " (click)="onToggleSearch()" *ngIf="!showSearch">Показать поиск </span>
+    <div class="col-md-8 col-sm-12 text-left align-middle align-self-center">
+      <button class="d-inline-block" *ngIf="!isMobile"
+              mat-raised-button color="primary" (click)="openAddDialog()">Добавить задачу
+      </button>
+      <div class="d-inline-block" style="padding-left: 20px;" *ngIf="!isMobile">
+          <span class="link " (click)="onToggleSearch()" *ngIf="showSearch">Скрыть поиск</span>
+          <span class="link " (click)="onToggleSearch()" *ngIf="!showSearch">Показать поиск </span>
+      </div>
     </div>
 
     <div 
-          class="col-md-8  align-self-center" 
+          class="col-md-4 align-self-center" 
           [ngClass]="{'founded-center': isMobile, 'text-right':!isMobile}"
     >
       <span class="founded">Найдено задач: {{totalTasksFounded}}</span>
@@ -142,6 +143,9 @@
   <div class="col-md-12 task-list">
     <!--    список задач -->
     <div class="card" *ngIf="!isMobile && tasks && tasks.length > 0">
+      <div class="card-header card-header-warning">
+          <h4 class="card-title">Список задач</h4>
+      </div>
       <!-- показывать таблицу, если это не моб. устройство -->
       <div class="card-body">
         <div class="table-responsive" *ngIf="tasks && (tasks.length > 0)">
@@ -266,7 +270,7 @@
                [ngClass]="{'background-completed': task.completed}"></div>
 
           <div class="row">
-            <div class="mobile-title-inner  col-9 align-top">
+            <div class="mobile-title-inner col-9 align-top">
               <div class="mobile-title" [class.completed]="task.completed">
                 {{task.title}}
               </div>

@@ -31,7 +31,6 @@ export class CategoriesComponent implements OnInit {
 
   // для отображения иконки редактирования при наведении на категорию
   indexMouseMove: number;
-  showEditIconCategory: boolean; // показывать ли иконку редактирования категории
   filterTitle: string; // текущее значение для поиска категорий
   filterChanged: boolean; // были ли изменения в параметре поиска
   isMobile: boolean;
@@ -114,9 +113,8 @@ export class CategoriesComponent implements OnInit {
   }
 
   // сохраняет индекс записи категории, над который в данный момент проходит мышка (и там отображается иконка редактирования)
-  showEditIcon(show: boolean, index: number) {
+  showEditIcon(index: number) {
     this.indexMouseMove = index;
-    this.showEditIconCategory = show;
   }
 
   clearAndSearch() {

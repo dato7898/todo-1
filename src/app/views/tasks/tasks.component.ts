@@ -27,7 +27,7 @@ export class TasksComponent implements OnInit {
   taskTo: TaskTo;
   // все возможные параметры для поиска задач
   @Input('taskTo')
-  set setTaskSearchValues(taskTo: TaskTo) {
+  set setTaskTo(taskTo: TaskTo) {
       this.taskTo = taskTo;
       this.initSearchValues(); // записать в локальные переменные
       this.initSortDirectionIcon(); // показать правильную иконку (убывание, возрастание)

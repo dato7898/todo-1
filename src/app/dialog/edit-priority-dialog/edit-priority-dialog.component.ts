@@ -12,7 +12,7 @@ import {DialogAction, DialogResult} from '../../object/DialogResult';
 export class EditPriorityDialogComponent implements OnInit {
   dialogTitle: string;
   priority: Priority;
-  canDelete: boolean;
+  canDelete = false;
 
   constructor(
     private dialogRef: MatDialogRef<EditPriorityDialogComponent>, // для возможности работы с текущим диалог. окном

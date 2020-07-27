@@ -49,8 +49,8 @@ export class AppComponent implements OnInit {
   readonly cookieShowStat = 'todo:showStat';
   readonly cookieShowSearch = 'todo:showSearch';
 
-  showStat = true;
-  showSearch = true;  // показать/скрыть поиск
+  showStat = false;
+  showSearch = false;  // показать/скрыть поиск
 
   stat: Stat; // данные общей статистики
   dash: DashboardData = new DashboardData(); // данные для дашбоарда
@@ -335,9 +335,9 @@ export class AppComponent implements OnInit {
     this.searchTasks(this.taskTo); // показываем новые данные
   }
 
-  // были ли изменены настройки приложения
-  settingsChanged(priorities: Priority[]) {
-    this.priorities = priorities; // получаем измененные массив с приоритетами
+  // были изменены настройки приложения
+  settingsChanged() {
+    this.fillAllPriorities();
     this.searchTasks(this.taskTo); // обновить текущие задачи и категории для отображения
   }
 

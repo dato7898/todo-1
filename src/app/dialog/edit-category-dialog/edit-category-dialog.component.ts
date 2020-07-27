@@ -13,7 +13,7 @@ import {DialogResult} from '../../object/DialogResult';
 export class EditCategoryDialogComponent implements OnInit {
   dialogTitle: string;
   category: Category;
-  canDelete = true;
+  canDelete = false;
 
   constructor(
     private dialogRef: MatDialogRef<EditCategoryDialogComponent>, // для возможности работы с текущим диалог. окном

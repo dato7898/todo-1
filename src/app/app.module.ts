@@ -93,24 +93,24 @@ registerLocaleData(localeRu);
     },
     {
       provide: TASK_URL_TOKEN,
-      useValue: 'http://localhost:8080/task'
+      useValue: 'https://backend-todo-dd.herokuapp.com/task'
     },
 
     {
       provide: CATEGORY_URL_TOKEN,
-      useValue: 'http://localhost:8080/category'
+      useValue: 'https://backend-todo-dd.herokuapp.com/category'
     },
 
 
     {
       provide: PRIORITY_URL_TOKEN,
-      useValue: 'http://localhost:8080/priority'
+      useValue: 'https://backend-todo-dd.herokuapp.com/priority'
     },
 
 
     {
       provide: STAT_URL_TOKEN,
-      useValue: 'http://localhost:8080/stat'
+      useValue: 'https://backend-todo-dd.herokuapp.com/stat'
     }
   ],
   entryComponents: [

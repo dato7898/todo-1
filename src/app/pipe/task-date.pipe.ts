@@ -5,8 +5,10 @@ import { DatePipe } from '@angular/common';
   name: 'taskDate'
 })
 export class TaskDatePipe implements PipeTransform {
+	
+    private static dateDenominator = 1000 * 60 * 60 * 24
 
-  transform(date: Date | string, format: string = 'mediumDate'): string { // mediumDate - форматирование по-умолчанию
+    transform(date: Date | string, format: string = 'mediumDate'): string { // mediumDate - форматирование по-умолчанию
 
     if (date == null) {
       return 'Без срока';
@@ -14,17 +16,17 @@ export class TaskDatePipe implements PipeTransform {
 
     date = new Date(date);
 
-    const currentDate = new Date().getDate();
+    const currentDate = new Date();
 
-    if (date.getDate() === currentDate) {
+    if ((date.setHours(0, 0, 0, 0) - currentDate.setHours(0, 0, 0, 0)) / TaskDatePipe.dateDenominator === 0) {
       return 'Сегодня';
     }
 
-    if (date.getDate() === currentDate - 1) {
+    if ((date.setHours(0, 0, 0, 0) - currentDate.setHours(0, 0, 0, 0)) / TaskDatePipe.dateDenominator === -1) {
       return 'Вчера';
     }
 
-    if (date.getDate() === currentDate + 1) {
+    if ((date.setHours(0, 0, 0, 0) - currentDate.setHours(0, 0, 0, 0)) / TaskDatePipe.dateDenominator === 1) {
       return 'Завтра';
     }
 
